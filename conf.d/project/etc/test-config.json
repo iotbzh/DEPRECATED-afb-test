@@ -1,0 +1,22 @@
+{
+    "id": "http://iot.bzh/download/public/schema/json/ctl-schema.json#",
+    "$schema": "http://iot.bzh/download/public/schema/json/ctl-schema.json#",
+    "metadata": {
+        "uid": "Test",
+        "version": "1.0",
+        "api": "test",
+        "info": "Binding made to tests other bindings",
+        "require": ["low-can"]
+    },
+    "resources": {
+        "uid": "low-can-test",
+        "info": "Plugin that will test low-can binding",
+        "spath": "var/",
+        "file": "low-can-tests.lua"
+    },
+    "onload": {
+        "uid": "launch_all_tests",
+        "info": "Launch all the tests",
+        "action": "lua://low-can-test#_launch_tests_"
+    }
+}
