@@ -8,15 +8,21 @@
         "info": "Binding made to tests other bindings",
         "require": ["low-can"]
     },
-    "resources": {
+    "resources": [{
         "uid": "low-can-test",
         "info": "Plugin that will test low-can binding",
         "spath": "var/",
-        "file": "low-can-tests.lua"
-    },
+        "libs": [ "low-can-tests.lua"]
+    }],
     "onload": {
         "uid": "launch_all_tests",
         "info": "Launch all the tests",
-        "action": "lua://low-can-test#_launch_tests_"
-    }
+        "action": "lua://low-can-test#_launch_tests"
+    },
+    "events":[
+        {
+            "uid": "monitor/trace",
+            "action": "lua://low-can-test#_evt_catcher_"
+        }
+    ]
 }

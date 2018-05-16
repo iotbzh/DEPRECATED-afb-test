@@ -20,11 +20,12 @@
 #define _CTL_BINDING_INCLUDE_
 
 #include <stdio.h>
-#include <alsa/asoundlib.h>
-
+#include <ctl-config.h>
 #include <filescan-utils.h>
 #include <wrap-json.h>
 
-#include <ctl-config.h>
+#ifndef ERROR
+  #define ERROR -1
+#endif
 
 #endif /* _CTL_BINDING_INCLUDE_ */
