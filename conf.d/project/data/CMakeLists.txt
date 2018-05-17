@@ -20,11 +20,11 @@
 ##################################################
 # Soft Mixer Lua Scripts
 ##################################################
-PROJECT_TARGET_ADD(test-lua)
+PROJECT_TARGET_ADD(low-can-data)
 
-	file(GLOB LUA_FILES "*.lua")
+	file(GLOB CAN_DATA "*.canreplay" "*.sh")
 
-	add_input_files("${LUA_FILES}")
+	add_input_files("${CAN_DATA}")
 
 	SET_TARGET_PROPERTIES(${TARGET_NAME} PROPERTIES
 	LABELS "DATA"

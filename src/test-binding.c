@@ -1,19 +1,20 @@
 /*
- * Copyright (C) 2016 "IoT.bzh"
- * Author Fulup Ar Foll <fulup@iot.bzh>
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+* Copyright (C) 2016 "IoT.bzh"
+* Author Fulup Ar Foll <fulup@iot.bzh>
+* Author Romain Forlot <romain@iot.bzh>
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+*   http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*/
 
 #define _GNU_SOURCE
 #include <stdio.h>
@@ -31,7 +32,6 @@ static CtlSectionT ctrlSections[] = {
 	{.key = "resources", .loadCB = PluginConfig},
 	{.key = "onload", .loadCB = OnloadConfig},
 	{.key = "events", .loadCB = EventConfig},
-
 	{.key = NULL}
 };
 
@@ -107,36 +107,6 @@ static int CtrlLoadOneApi(void *cbdata, AFB_ApiT apiHandle) {
 	return err;
 }
 
-int AddLunitFrameworkResource(AFB_ApiT apihandle, CtlConfigT *ctrlConfig)
-{
-	int err = 0;
-	json_object *luaunitFrameworkJ = NULL, *resourcesJ = NULL;
-	json_object *savedJ = NULL;
-
-	err = wrap_json_pack(&luaunitFrameworkJ, "{ss, ss, ss, ss}",
-		"uid", "lunit",
-		"info", "Lunit LUA xUnit framework",
-		"spath", CONTROL_PLUGIN_PATH,
-		"libs", "luaunit.lua");
-	if(err) {
-		AFB_ApiError(apihandle, "Loading LUA xUnit framework");
-		return ERROR;
-	}
-
-	if(json_object_object_get_ex(ctrlConfig->configJ, "resources", &resourcesJ) &&
-	json_object_is_type(resourcesJ, json_type_array)) {
-		savedJ = json_object_get(json_object_array_get_idx(resourcesJ, 0));
-		json_object_array_put_idx(resourcesJ, 0, luaunitFrameworkJ);
-		json_object_array_add(resourcesJ, savedJ);
-	}
-	else {
-		AFB_ApiError(apihandle, "Resources section isn't a JSON array or does not exists.");
-		return ERROR;
-	}
-
-	return 0;
-}
-
 int afbBindingVdyn(afb_dynapi *apiHandle) {
 
 	AFB_default = apiHandle;
@@ -170,10 +140,6 @@ int afbBindingVdyn(afb_dynapi *apiHandle) {
 
 	AFB_ApiNotice(apiHandle, "Controller API='%s' info='%s'", ctrlConfig->api,
 			ctrlConfig->info);
-
-
-	if (AddLunitFrameworkResource(apiHandle, ctrlConfig))
-		return ERROR;
 
 	// create one API per config file (Pre-V3 return code ToBeChanged)
 	int status = afb_dynapi_new_api(apiHandle, ctrlConfig->api, ctrlConfig->info, 1, CtrlLoadOneApi, ctrlConfig);

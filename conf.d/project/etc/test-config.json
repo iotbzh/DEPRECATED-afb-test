@@ -17,7 +17,7 @@
     "onload": {
         "uid": "launch_all_tests",
         "info": "Launch all the tests",
-        "action": "lua://low-can-test#_launch_tests"
+        "action": "lua://low-can-test#_launch_test"
     },
     "events":[
         {
