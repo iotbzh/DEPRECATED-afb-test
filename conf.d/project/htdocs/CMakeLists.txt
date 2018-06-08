@@ -21,7 +21,7 @@
 ##################################################
 # HTML Testing Files
 ##################################################
-PROJECT_TARGET_ADD(softmixer-html5)
+PROJECT_TARGET_ADD(afb-test-html5)
 
     file(GLOB SOURCE_FILES "*.html" "*.js" "*.jpg" "*.css")
 
