@@ -47,7 +47,6 @@ set(PROJECT_APP_TEMPLATES_DIR "conf.d/app-templates")
 # ----------------------------------
 set(CMAKE_BUILD_TYPE "DEBUG")
 
-
 # Kernel selection if needed. You can choose between a
 # mandatory version to impose a minimal version.
 # Or check Kernel minimal version and just print a Warning

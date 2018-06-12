@@ -1,7 +1,7 @@
 
 --[[
-    Copyright (C) 2016 "IoT.bzh"
-    Author Fulup Ar Foll <fulup@iot.bzh>
+    Copyright (C) 2018 "IoT.bzh"
+    Author Romain Forlot <romain.forlot@iot.bzh>
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -18,6 +18,9 @@
 
     NOTE: strict mode: every global variables should be prefixed by '_'
 --]]
+
+-- BOUNDARY WIP
+
 package.path = package.path .. ';./var/?.lua'
 local lu = require('luaunit')
 local src = nil

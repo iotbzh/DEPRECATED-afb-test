@@ -5,19 +5,21 @@
         "uid": "Test",
         "version": "1.0",
         "api": "test",
-        "info": "Binding made to tests other bindings",
-        "require": ["low-can"]
+        "info": "Binding made to tests other bindings"
     },
     "resources": [{
-        "uid": "low-can-test",
-        "info": "Plugin that will test low-can binding",
+        "uid": "AFT",
+        "info": "Binder test framework",
         "spath": "var/",
-        "libs": [ "low-can-tests.lua"]
+        "libs": [ "AFT.lua"]
     }],
     "onload": {
         "uid": "launch_all_tests",
         "info": "Launch all the tests",
-        "action": "lua://low-can-test#_launch_test"
+        "action": "lua://low-can-test#_launch_test",
+        "args": {
+            "files": ["helloworld.lua"]
+        }
     },
     "events":[
         {
