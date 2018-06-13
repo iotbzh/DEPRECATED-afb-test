@@ -26,8 +26,7 @@
 // default api to print log when apihandle not avaliable
 afb_dynapi *AFB_default;
 
-// Config Section definition (note: controls section index should match handle
-// retrieval in HalConfigExec)
+// Config Section definition
 static CtlSectionT ctrlSections[] = {
 	{.key = "resources", .loadCB = PluginConfig},
 	{.key = "onload", .loadCB = OnloadConfig},
@@ -67,14 +66,6 @@ static int CtrlInitOneApi(AFB_ApiT apiHandle) {
 	int err = 0;
 	AFB_default = apiHandle; // hugely hack to make all V2 AFB_DEBUG to work in fileutils
 
-	// retrieve section config from api handle
-	CtlConfigT *ctrlConfig = (CtlConfigT *)afb_dynapi_get_userdata(apiHandle);
-	err = CtlConfigExec(apiHandle, ctrlConfig);
-	if(err) {
-		AFB_ApiError(apiHandle, "Error at CtlConfigExec step");
-		return err;
-	}
-
 	return err;
 }
 
@@ -108,7 +99,7 @@ static int CtrlLoadOneApi(void *cbdata, AFB_ApiT apiHandle) {
 }
 
 int afbBindingVdyn(afb_dynapi *apiHandle) {
-
+	int status, err = 0;
 	AFB_default = apiHandle;
 	AFB_ApiNotice(apiHandle, "Controller in afbBindingVdyn");
 
@@ -142,7 +133,13 @@ int afbBindingVdyn(afb_dynapi *apiHandle) {
 			ctrlConfig->info);
 
 	// create one API per config file (Pre-V3 return code ToBeChanged)
-	int status = afb_dynapi_new_api(apiHandle, ctrlConfig->api, ctrlConfig->info, 1, CtrlLoadOneApi, ctrlConfig);
+	status = afb_dynapi_new_api(apiHandle, ctrlConfig->api, ctrlConfig->info, 1, CtrlLoadOneApi, ctrlConfig);
+
+	err = CtlConfigExec(apiHandle, ctrlConfig);
+	if(err) {
+		AFB_ApiError(apiHandle, "Error at CtlConfigExec step");
+		return err;
+	}
 
 	return status;
 }
