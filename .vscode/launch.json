@@ -5,7 +5,7 @@
 	"version": "0.2.0",
 	"configurations": [
 		{
-			"name": "(gdb) Launch Test Low-CAN",
+			"name": "Launch Low-CAN test",
 			"type": "cppdbg",
 			"request": "launch",
 			"program": "/opt/AGL/bin/afb-daemon",
@@ -16,8 +16,35 @@
 				"--ldpaths=lib",
 				"--roothttp=.",
 				"--binding=${env:HOME}/opt/low-can-service/lib/afb-low-can.so",
-				"-v",
+				"-vvv",
 				"--tracereq=common"
+			],
+			"stopAtEntry": false,
+			"cwd": "${workspaceRoot}/build/package",
+			"environment": [],
+			"externalConsole": true,
+			"MIMode": "gdb",
+			"setupCommands": [
+				{
+					"description": "Enable pretty-printing for gdb",
+					"text": "-enable-pretty-printing",
+					"ignoreFailures": true
+				}
+			]
+		},
+		{
+			"name": "Launch Basic test",
+			"type": "cppdbg",
+			"request": "launch",
+			"program": "/opt/AGL/bin/afb-daemon",
+			"args": [
+				"--name=afbd-test",
+				"--token=1",
+				"--workdir=.",
+				"--ldpaths=/opt/AGL/lib64/afb:lib",
+				"--roothttp=htdocs",
+				"--tracereq=common",
+				"-vvv"
 			],
 			"stopAtEntry": false,
 			"cwd": "${workspaceRoot}/build/package",
