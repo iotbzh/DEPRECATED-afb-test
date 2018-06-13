@@ -20,31 +20,84 @@
 
 package.path = package.path .. ';./var/?.lua'
 local lu = require('luaunit')
+lu.LuaUnit:setOutputType('JUNIT')
+lu.LuaUnit.fname = "var/jUnitResults.xml"
 
-local AFT = {
-	context = _ctx
+_AFT = {
+	context = _ctx,
+	tests_list = {},
+	event_history = false,
+	monitored_events = {},
 }
+
+function _AFT.enableEventHistory()
+	_AFT.event_history = true
+end
 
 --[[
   Events listener and assertion function to test correctness of received
   event data.
 ]]
 
-_events_cb = {}
+function _evt_catcher_ (source, action, eventObj)
+	local eventName = eventObj.event.name
+	local eventListeners = eventObj.data.result
 
-function _evt_catcher_ (source, action, evt)
-  -- local table_end = table_length(_events) + 1
-  -- _events[event.event] = event.data
-  if _events_cb[evt.event] ~= nil then
-    _events_cb[evt.event](evt)
-  end
+	-- Remove from event to hold the bare event data and be able to assert it
+	eventObj.data.result = nil
+	local eventData = eventObj.data
+
+	if type(_AFT.monitored_events[eventName]) == 'table' then
+		_AFT.monitored_events[eventName].eventListeners = eventListeners
+
+		if _AFT.monitored_events[eventName].receivedCount then
+			_AFT.monitored_events[eventName].receivedCount = _AFT.monitored_events[eventName].receivedCount + 1
+		else
+			_AFT.monitored_events[eventName].receivedCount = 1
+		end
+
+		if _AFT.monitored_events[eventName].data and type(_AFT.monitored_events[eventName].data) == 'table' then
+			if _AFT.event_history == true then
+				table.insert(_AFT.monitored_events[eventName].data, eventObj, 1)
+			else
+				_AFT.monitored_events[eventName].data[1] = eventData
+			end
+		else
+			_AFT.monitored_events[eventName].data = {}
+			table.insert(_AFT.monitored_events[eventName].data, eventData)
+		end
+	end
 end
 
-function AFT.assertEvtReceived(event)
-	lu.execOneFunction(nil,nil,nil, function()
-		assertIsString(event, "Event parameter must be a string")
-		assertTrue(true)
-	end)
+function _AFT.addEventToMonitor(eventName, callback)
+	AFB:servsync(_AFT.context, "monitor", "set", { verbosity = "debug" })
+	--AFB:servsync(_AFT.context, "monitor", "trace", { add = { event = "push_before", event = "push_after" }})
+	AFB:servsync(_AFT.context, "monitor", "trace", { add = { event = "push_after" }})
+	if callback then
+		_AFT.monitored_events[eventName] = { cb = callback }
+	else
+		_AFT.monitored_events[eventName] = { cb = EvtReceived }
+	end
+end
+
+function _AFT.assertEvtReceived(eventName)
+	local count = 0
+	if _AFT.monitored_events[eventName].receivedCount then
+		count = _AFT.monitored_events[eventName].receivedCount
+	end
+
+	_AFT.assertIsTrue(count > 0, "No event '".. eventName .."' received")
+end
+
+function _AFT.testEvtReceived(testName, eventName, timeout)
+	table.insert(_AFT.tests_list, {testName, function()
+		if timeout then sleep(timeout) end
+		_AFT.assertEvtReceived(eventName)
+		if _AFT.monitored_events[eventName].cb then
+			local data_n = #_AFT.monitored_events[eventName].data
+			_AFT.monitored_events[eventName].cb(eventName, _AFT.monitored_events[eventName].data[data_n])
+		end
+	end})
 end
 
 --[[
@@ -52,48 +105,64 @@ end
 ]]
 
 local function assertVerbCallParameters(src, api, verb, args)
-	AFT.assertIsUserdata(src, "Source must be an opaque userdata pointer which will be passed to the binder")
-	AFT.assertIsString(api, "API and Verb must be string")
-	AFT.assertIsString(verb, "API and Verb must be string")
-	AFT.assertIsTable(args, "Arguments must use LUA Table (event empty)")
+	_AFT.assertIsUserdata(src, "Source must be an opaque userdata pointer which will be passed to the binder")
+	_AFT.assertIsString(api, "API and Verb must be string")
+	_AFT.assertIsString(verb, "API and Verb must be string")
+	_AFT.assertIsTable(args, "Arguments must use LUA Table (event empty)")
 end
 
-function AFT.assertVerb(api, verb, args, cb)
-	lu.LuaUnit:runSuiteByInstances({{"assertVerb", function()
-		assertVerbCallParameters(AFT.context, api, verb, args)
-		local err,responseJ = AFB:servsync(AFT.context, api, verb, args)
-		lu.assertFalse(err)
-		lu.assertStrContains(responseJ.request.status, "success", nil, nil, "Call for API/Verb failed.")
+function _AFT.assertVerb(api, verb, args, cb)
+	assertVerbCallParameters(_AFT.context, api, verb, args)
+	local err,responseJ = AFB:servsync(_AFT.context, api, verb, args)
+	_AFT.assertIsFalse(err)
+	_AFT.assertStrContains(responseJ.request.status, "success", nil, nil, "Call for API/Verb failed.")
 
-		if type(cb) == 'function' then
+	local tcb = type(cb)
+	if cb then
+		if tcb == 'function' then
 			cb(responseJ)
-		elseif type(cb) == 'table' then
-			assertTrue(table_eq(responseJ, cb))
-		elseif not type(cb) == nil then
-			assertTrue(false, "Wrong parameter passed to assertion. Last parameter should be function, table representing a JSON object or nil")
+		elseif tcb == 'table' then
+			_AFT.assertEquals(responseJ.response, cb)
+		elseif tcb == 'string' or tcb == 'number' then
+			_AFT.assertEquals(responseJ.response, cb)
+		else
+			_AFT.assertIsTrue(false, "Wrong parameter passed to assertion. Last parameter should be function, table representing a JSON object or nil")
 		end
-	end}} )
+	end
 end
 
-function AFT.assertVerbError(api, verb, args, cb)
-	lu.execOneFunction(nil,nil,nil, function()
-		assertVerbCallParameters(AFT.context, api, verb, args)
-		local err,responseJ = AFB:servsync(AFT.context, api, verb, args)
-		lu.assertFalse(err)
-		lu.assertNotStrContains(responseJ.request.status, "success", nil, nil, "Call for API/Verb succeed but it shouldn't.")
+function _AFT.assertVerbError(api, verb, args, cb)
+	assertVerbCallParameters(_AFT.context, api, verb, args)
+	local err,responseJ = AFB:servsync(_AFT.context, api, verb, args)
+	_AFT.assertIsTrue(err)
+	_AFT.assertNotStrContains(responseJ.request.status, "success", nil, nil, "Call for API/Verb succeed but it shouldn't.")
 
-		if type(cb) == 'function' then
+	local tcb = type(cb)
+	if cb then
+		if tcb == 'function' then
 			cb(responseJ)
-		elseif type(cb) == 'table' then
-			assertFalse(table_eq(responseJ, cb))
-		elseif not type(cb) == nil then
-			assertFalse(true, "Wrong parameter passed to assertion. Last parameter should be function, table representing a JSON object or nil")
+		elseif tcb == 'string' then
+			_AFT.assertNotEquals(responseJ.request.info, cb)
+		else
+			_AFT.assertIsFalse(false, "Wrong parameter passed to assertion. Last parameter should be a string representing the failure informations")
 		end
-	end)
+	end
+end
+
+function _AFT.testVerb(testName, api, verb, args, cb)
+	table.insert(_AFT.tests_list, {testName, function()
+		_AFT.assertVerb(api, verb, args, cb)
+	end})
+end
+
+function _AFT.testVerbError(testName, api, verb, args, cb)
+	table.insert(_AFT.tests_list, {testName, function()
+		_AFT.assertVerbError(api, verb, args, cb)
+	end})
 end
 
 --[[
-	Make all assertions accessible using AFT and declare some convenients
+	Make all assertions accessible using _AFT and declare some convenients
 	aliases.
 ]]
 
@@ -241,36 +310,38 @@ local luaunit_list_of_funcs = {
 	'assertNotIsThread',
 }
 
-local aft_list_of_funcs = {
+local _AFT_list_of_funcs = {
 	-- AF Binder generic assertions
 	{ 'assertVerb',      'assertVerbStatusSuccess' },
 	{ 'assertVerb',      'assertVerbResponseEquals' },
-	{ 'assertVerb',      'assertVerbResponseContains' },
 	{ 'assertVerb',      'assertVerbCb' },
 	{ 'assertVerbError', 'assertVerbStatusError' },
 	{ 'assertVerbError', 'assertVerbResponseEqualsError' },
-	{ 'assertVerbError', 'assertVerbResponseContainsError' },
 	{ 'assertVerbError', 'assertVerbCbError' },
+	{ 'testVerb',      'testVerbStatusSuccess' },
+	{ 'testVerb',      'testVerbResponseEquals' },
+	{ 'testVerb',      'testVerbCb' },
+	{ 'testVerbError', 'testVerbStatusError' },
+	{ 'testVerbError', 'testVerbResponseEqualsError' },
+	{ 'testVerbError', 'testVerbCbError' },
 }
 
 -- Create all aliases in M
 for _, v in pairs( luaunit_list_of_funcs ) do
 	local funcname = v
-	AFT[funcname] = lu[funcname]
+	_AFT[funcname] = lu[funcname]
 end
 
 -- Create all aliases in M
-for _, v in pairs( aft_list_of_funcs ) do
+for _, v in pairs( _AFT_list_of_funcs ) do
 	local funcname, alias = v[1], v[2]
-	AFT[alias] = AFT[funcname]
+	_AFT[alias] = _AFT[funcname]
 end
 
 function _launch_test(context, args)
-	_ctx = context
+	_AFT.context = context
 	for _,f in pairs(args.files) do
-		print('******** Do file: var/'.. f)
 		dofile('var/'..f)
 	end
+	lu.LuaUnit:runSuiteByInstances(_AFT.tests_list)
 end
-
-return AFT

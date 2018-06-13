@@ -18,7 +18,37 @@
     NOTE: strict mode: every global variables should be prefixed by '_'
 --]]
 
-local AFT = require('aft')
+function _callback(responseJ)
+  _AFT.assertStrContains(responseJ.response, "Some String")
+end
 
---print("***** In Helloworld Test ".. Dump_Table(AFT))
-AFT.assertVerbStatusSuccess('hello', 'ping', {})
+function _callbackError(responseJ)
+  _AFT.assertStrContains(responseJ.request.info, "Ping Binder Daemon fails")
+end
+
+function _callbackEvent(eventName, eventData)
+  _AFT.assertEquals(eventData, {data = { key = 'weird others data', another_key = 123.456 }})
+end
+
+_AFT.addEventToMonitor("hello/anEvent")
+_AFT.addEventToMonitor("hello/anotherEvent", _callbackEvent)
+
+_AFT.testVerbStatusSuccess('testPingSuccess','hello', 'ping', {})
+_AFT.testVerbResponseEquals('testPingSuccess','hello', 'ping', {}, "Some String")
+_AFT.testVerbResponseEquals('testPingSuccess','hello', 'ping', {}, "Unexpected String")
+_AFT.testVerbCb('testPingSuccess','hello', 'ping', {}, _callback)
+_AFT.testVerbStatusError('testPingError', 'hello', 'pingfail', {})
+_AFT.testVerbResponseEqualsError('testPingError', 'hello', 'pingfail', {}, "Ping Binder Daemon fails")
+_AFT.testVerbResponseEqualsError('testPingError', 'hello', 'pingfail', {}, "Ping Binder Daemon succeed")
+_AFT.testVerbCbError('testPingError', 'hello', 'pingfail', {}, _callbackError)
+
+_AFT.testVerbStatusSuccess('testEventAdd', 'hello', 'eventadd', {tag = 'event', name = 'anEvent'})
+_AFT.testVerbStatusSuccess('testEventSub', 'hello', 'eventsub', {tag = 'event'})
+_AFT.testVerbStatusSuccess('testEventPush', 'hello', 'eventpush', {tag = 'event', data = { key = 'some data', another_key = 123}})
+
+_AFT.testVerbStatusSuccess('testEventAdd', 'hello', 'eventadd', {tag = 'evt', name = 'anotherEvent'})
+_AFT.testVerbStatusSuccess('testEventSub', 'hello', 'eventsub', {tag = 'evt'})
+_AFT.testVerbStatusSuccess('testEventPush', 'hello', 'eventpush', {tag = 'evt', data = { key = 'weird others data', another_key = 123.456}})
+
+_AFT.testEvtReceived("testEvent", "hello/anEvent")
+_AFT.testEvtReceived("testEventCb", "hello/anotherEvent")

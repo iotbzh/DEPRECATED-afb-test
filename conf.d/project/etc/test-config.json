@@ -11,12 +11,12 @@
         "uid": "AFT",
         "info": "Binder test framework",
         "spath": "var/",
-        "libs": [ "AFT.lua"]
+        "libs": [ "aft.lua"]
     }],
     "onload": {
         "uid": "launch_all_tests",
         "info": "Launch all the tests",
-        "action": "lua://low-can-test#_launch_test",
+        "action": "lua://AFT#_launch_test",
         "args": {
             "files": ["helloworld.lua"]
         }
