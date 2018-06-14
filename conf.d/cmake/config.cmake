@@ -18,7 +18,7 @@
 
 # Project Info
 # ------------------
-set(PROJECT_NAME afb-test)
+set(PROJECT_NAME test)
 set(PROJECT_VERSION "5.0")
 set(PROJECT_PRETTY_NAME "Binding to test other bindings")
 set(PROJECT_DESCRIPTION "Binding used to test other binding")
@@ -71,8 +71,6 @@ set (PKG_REQUIRED_LIST
 	json-c
 	libsystemd>=222
 	afb-daemon>=4.0
-	libmicrohttpd>=0.9.55
-	uuid
 )
 
 # Prefix path where will be installed the files
@@ -195,7 +193,7 @@ set(AFB_REMPORT "1234" CACHE PATH "Default binder listening port")
 
 # Print a helper message when every thing is finished
 # ----------------------------------------------------
-set(CLOSING_MESSAGE "Typical binding launch: afb-daemon --name afbd-${PROJECT_NAME} --port=${AFB_REMPORT} --workdir=${CMAKE_BINARY_DIR}/package --ldpaths=lib --roothttp=.  --token=\"${AFB_TOKEN}\" --tracereq=common --verbose")
+set(CLOSING_MESSAGE "Typical binding launch: afb-daemon --name afbd-${PROJECT_NAME} --port=${AFB_REMPORT} --workdir=package --ldpaths=/opt/AGL/lib64/afb:lib --token=\"${AFB_TOKEN}\" --tracereq=common --verbose")
 set(PACKAGE_MESSAGE "Install widget file using in the target : afm-util install ${PROJECT_NAME}.wgt")
 
 # Optional schema validator about now only XML, LUA and JSON
