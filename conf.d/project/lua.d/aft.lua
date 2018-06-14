@@ -161,6 +161,12 @@ function _AFT.testVerbError(testName, api, verb, args, cb)
 	end})
 end
 
+function _AFT.testCustom(testName, testFunction)
+	table.insert(_AFT.tests_list, {testName, function()
+		testFunction()
+	end})
+end
+
 --[[
 	Make all assertions accessible using _AFT and declare some convenients
 	aliases.
