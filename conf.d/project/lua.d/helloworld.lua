@@ -32,7 +32,7 @@ end
 
 _AFT.addEventToMonitor("hello/anEvent")
 _AFT.addEventToMonitor("hello/anotherEvent", _callbackEvent)
-_AFT.addLogToMonitor("test", "warning", "CtlDispatchEvent: fail to find uid=hello/anEvent in action event section")
+_AFT.addLogToMonitor("hello", "warning", "verbose called for My Warning message!")
 
 _AFT.testVerbStatusSuccess('testPingSuccess','hello', 'ping', {})
 _AFT.testVerbResponseEquals('testPingSuccess','hello', 'ping', {}, "Some String")
@@ -51,10 +51,12 @@ _AFT.testVerbStatusSuccess('testEventAdd', 'hello', 'eventadd', {tag = 'evt', na
 _AFT.testVerbStatusSuccess('testEventSub', 'hello', 'eventsub', {tag = 'evt'})
 _AFT.testVerbStatusSuccess('testEventPush', 'hello', 'eventpush', {tag = 'evt', data = { key = 'weird others data', another_key = 123.456}})
 
+_AFT.testVerbStatusSuccess('testGenerateWarning', 'hello', 'verbose', {level = 4, message = 'My Warning message!'})
+
 _AFT.testEvtReceived("testEvent", "hello/anEvent")
 _AFT.testEvtReceived("testEventCb", "hello/anotherEvent")
 
-_AFT.testLogReceived("LogReceived", "CtlDispatchEvent: fail to find uid=hello/anEvent in action event section")
+_AFT.testLogReceived("LogReceived", "verbose called for My Warning message!")
 
 _AFT.testCustom("mytest", function()
   _AFT.assertEquals(false, false)

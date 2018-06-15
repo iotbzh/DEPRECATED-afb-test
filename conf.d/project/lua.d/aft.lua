@@ -80,13 +80,22 @@ function _AFT.registerData(dict, eventData)
 	end
 end
 
-function _AFT.daemonEventHandler(eventObj)
+function _AFT.requestDaemonEventHandler(eventObj)
 	local eventName = eventObj.data.message
 	local log = _AFT.monitored_events[eventName]
-	if log and log.api == eventObj.daemon.api and log.type == eventObj.data.type then
+	local api = nil
+	print(log.api, api)
+	if eventObj.daemon then
+		api = eventObj.daemon.api
+	elseif eventObj.request then
+		api = eventObj.request.api
+	end
+
+	if log and log.api == api and log.type == eventObj.data.type then
 		_AFT.incrementCount(_AFT.monitored_events[eventName])
 		_AFT.registerData(_AFT.monitored_events[eventName], eventObj.data)
 	end
+
 end
 
 function _AFT.bindingEventHandler(eventObj)
@@ -108,8 +117,8 @@ function _evt_catcher_ (source, action, eventObj)
 	print(Dump_Table(eventObj))
 	if eventObj.type == "event" then
 		_AFT.bindingEventHandler(eventObj)
-	elseif eventObj.type == "daemon" then
-		_AFT.daemonEventHandler(eventObj)
+	elseif eventObj.type == "daemon" or eventObj.type == "request" then
+		_AFT.requestDaemonEventHandler(eventObj)
 	end
 end
 
@@ -396,8 +405,7 @@ end
 function _launch_test(context, args)
 	_AFT.context = context
 	AFB:servsync(_AFT.context, "monitor", "set", { verbosity = "debug" })
-	--AFB:servsync(_AFT.context, "monitor", "trace", { add = { event = "push_before", event = "push_after" }})
-	AFB:servsync(_AFT.context, "monitor", "trace", { add = { daemon = "vverbose", event = "push_after" }})
+	AFB:servsync(_AFT.context, "monitor", "trace", { add = { api = args.api, request = "vverbose", daemon = "vverbose", event = "push_after" }})
 	for _,f in pairs(args.files) do
 		dofile('var/'..f)
 	end

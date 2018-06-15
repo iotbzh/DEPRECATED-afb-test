@@ -15,6 +15,7 @@
         "info": "Launch all the tests",
         "action": "lua://AFT#_launch_test",
         "args": {
+            "trace": "hello",
             "files": ["helloworld.lua"]
         }
     }
