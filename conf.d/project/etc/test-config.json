@@ -5,14 +5,11 @@
         "uid": "Test",
         "version": "1.0",
         "api": "test",
-        "info": "Binding made to tests other bindings"
+        "info": "Binding made to tests other bindings",
+        "require": [
+            "hello"
+        ]
     },
-    "resources": [{
-        "uid": "AFT",
-        "info": "Binder test framework",
-        "spath": "var/",
-        "libs": [ "aft.lua"]
-    }],
     "onload": {
         "uid": "launch_all_tests",
         "info": "Launch all the tests",
@@ -20,11 +17,5 @@
         "args": {
             "files": ["helloworld.lua"]
         }
-    },
-    "events":[
-        {
-            "uid": "monitor/trace",
-            "action": "lua://low-can-test#_evt_catcher_"
-        }
-    ]
+    }
 }

@@ -100,21 +100,25 @@ static int CtrlLoadOneApi(void *cbdata, AFB_ApiT apiHandle) {
 
 int afbBindingVdyn(afb_dynapi *apiHandle) {
 	int status, err = 0;
+	const char *dirList = NULL, *configPath = NULL;
+	json_object *resourcesJ = NULL, *eventsJ = NULL;
+	CtlConfigT *ctrlConfig = NULL;
 	AFB_default = apiHandle;
+
 	AFB_ApiNotice(apiHandle, "Controller in afbBindingVdyn");
 
-	const char *dirList = getenv("CONTROL_CONFIG_PATH");
+	dirList = getenv("CONTROL_CONFIG_PATH");
 	if (!dirList)
 		dirList = CONTROL_CONFIG_PATH;
 
-	const char *configPath = CtlConfigSearch(apiHandle, dirList, "");
+	configPath = CtlConfigSearch(apiHandle, dirList, "");
 	if (!configPath) {
 		AFB_ApiError(apiHandle, "CtlPreInit: No %s* config found in %s ", GetBinderName(), dirList);
 		return ERROR;
 	}
 
 	// load config file and create API
-	CtlConfigT *ctrlConfig = CtlLoadMetaData(apiHandle, configPath);
+	ctrlConfig = CtlLoadMetaData(apiHandle, configPath);
 	if (!ctrlConfig) {
 		AFB_ApiError(apiHandle,
 			"CtrlBindingDyn No valid control config file in:\n-- %s",
@@ -131,6 +135,22 @@ int afbBindingVdyn(afb_dynapi *apiHandle) {
 
 	AFB_ApiNotice(apiHandle, "Controller API='%s' info='%s'", ctrlConfig->api,
 			ctrlConfig->info);
+
+	err = wrap_json_pack(&resourcesJ, "{s[{ss, ss, ss, s[s]}]}", "resources",
+		"uid", "AFT",
+		"info", "LUA Binder test framework",
+		"spath", "var/",
+		"libs", "aft.lua" );
+	err += wrap_json_pack(&eventsJ, "{s[{ss, ss}]}", "events",
+		"uid", "monitor/trace",
+		"action", "lua://AFT#_evt_catcher_" );
+
+	if(err) {
+		AFB_ApiError(apiHandle, "Error at Controller configuration editing.");
+		return err;
+	}
+	wrap_json_object_add(ctrlConfig->configJ, resourcesJ);
+	wrap_json_object_add(ctrlConfig->configJ, eventsJ);
 
 	// create one API per config file (Pre-V3 return code ToBeChanged)
 	status = afb_dynapi_new_api(apiHandle, ctrlConfig->api, ctrlConfig->info, 1, CtrlLoadOneApi, ctrlConfig);
