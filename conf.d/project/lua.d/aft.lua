@@ -405,7 +405,7 @@ end
 function _launch_test(context, args)
 	_AFT.context = context
 	AFB:servsync(_AFT.context, "monitor", "set", { verbosity = "debug" })
-	AFB:servsync(_AFT.context, "monitor", "trace", { add = { api = args.api, request = "vverbose", daemon = "vverbose", event = "push_after" }})
+	AFB:servsync(_AFT.context, "monitor", "trace", { add = { api = args.trace, request = "vverbose", daemon = "vverbose", event = "push_after" }})
 	for _,f in pairs(args.files) do
 		dofile('var/'..f)
 	end
