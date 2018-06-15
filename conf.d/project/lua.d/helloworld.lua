@@ -32,6 +32,7 @@ end
 
 _AFT.addEventToMonitor("hello/anEvent")
 _AFT.addEventToMonitor("hello/anotherEvent", _callbackEvent)
+_AFT.addLogToMonitor("test", "warning", "CtlDispatchEvent: fail to find uid=hello/anEvent in action event section")
 
 _AFT.testVerbStatusSuccess('testPingSuccess','hello', 'ping', {})
 _AFT.testVerbResponseEquals('testPingSuccess','hello', 'ping', {}, "Some String")
@@ -52,3 +53,9 @@ _AFT.testVerbStatusSuccess('testEventPush', 'hello', 'eventpush', {tag = 'evt', 
 
 _AFT.testEvtReceived("testEvent", "hello/anEvent")
 _AFT.testEvtReceived("testEventCb", "hello/anotherEvent")
+
+_AFT.testLogReceived("LogReceived", "CtlDispatchEvent: fail to find uid=hello/anEvent in action event section")
+
+_AFT.testCustom("mytest", function()
+  _AFT.assertEquals(false, false)
+end)
