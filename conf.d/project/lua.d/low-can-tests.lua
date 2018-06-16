@@ -19,76 +19,23 @@
     NOTE: strict mode: every global variables should be prefixed by '_'
 --]]
 
--- BOUNDARY WIP
+_AFT.testCustom("Test_detection_is_off", function()
+    local logMsg = "signal: Engine is off, diagnostic_messages.engine.speed won't received responses until it's on"
+    _AFT.addLogToMonitor("low-can", "warning", logMsg)
 
-package.path = package.path .. ';./var/?.lua'
-local lu = require('luaunit')
-local src = nil
-local arg = nil
+    _AFT.assertVerb("low-can","subscribe", { event = "diagnostic_messages.engine.speed" })
+    _AFT.assertLogReceived(logMsg)
+end)
 
--- Static variables should be prefixed with _
-_EventHandle = {}
+_AFT.testCustom("Test_turning_on", function()
+    _AFT.assertVerb("low-can","subscribe", { event = "diagnostic_messages.engine.speed" })
 
-local engine_off_evt_received   = false
-local engine_speed_evt_received = false
+    local evt = "low-can/diagnostic_messages"
+    _AFT.addEventToMonitor(evt)
+    local ret = os.execute("./var/replay_launcher.sh ./var/test1.canreplay")
+    _AFT.assertIsTrue(ret)
 
-local clock = os.clock
-function sleep(n)  -- seconds
-  local t0 = clock()
-  while clock() - t0 <= n do end
-end
-
-function _evt_catcher_ (source, action, event)
-    local match = string.find(event.data.message, "is_engine_on: engine.speed CAN signal found, but engine seems off")
-    if match ~= nil then
-        engine_off_evt_received = true
-    end
-
-    match = string.find(event.data.message, "diagnostic_messages.engine.speed")
-    if match ~= nil then
-        engine_speed_evt_received = true
-    end
-end
-
-function _start_afb_logging()
-    AFB:servsync(src, "monitor","set", { verbosity = "debug" })
-    AFB:servsync(src, "monitor","trace", { add = { api = "low-can", daemon = "vverbose" }})
-end
-
-function _stop_afb_logging()
-    AFB:servsync(src, "monitor","trace", { drop = true})
-end
-
-Test_Engine = {}
-    function Test_Engine:test_detection_is_off()
-        local responseJ = {}
-
-        _start_afb_logging()
-
-        local err,responseJ = AFB:servsync(src, "low-can","subscribe", { event = "diagnostic_messages.engine.speed" })
-
-        lu.assertStrMatches(responseJ.request.status, "success", nil, nil, "Correctly subscribed to engine.speed signal")
-
-        _stop_afb_logging()
-
-        lu.assertTrue(engine_off_evt_received, "Expected message did not comes up from binder log")
-    end
-
-    function Test_Engine:Test_turning_on()
-        _start_afb_logging()
-
-        local ret = os.execute("./var/replay_launcher.sh ./var/test1.canreplay")
-        lu.assertTrue(ret)
-        --sleep(60)
-        lu.assertTrue(engine_speed_evt_received, "Engine still off")
-
-        _stop_afb_logging()
-    end
-
-
-function _launch_test (source, args)
-    src = source
-    arg = args
-
-    os.exit(lu.LuaUnit.run()) -- run the tests!
-end
+    _AFT.assertEvtReceived(evt, function(eventName, data)
+        _AFT.assertIsTrue(data.name == "diagnostic_messages.engine.speed")
+    end)
+end)
