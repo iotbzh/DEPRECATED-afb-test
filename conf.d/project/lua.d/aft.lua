@@ -84,7 +84,7 @@ function _AFT.requestDaemonEventHandler(eventObj)
 	local eventName = eventObj.data.message
 	local log = _AFT.monitored_events[eventName]
 	local api = nil
-	print(log.api, api)
+
 	if eventObj.daemon then
 		api = eventObj.daemon.api
 	elseif eventObj.request then
@@ -114,7 +114,6 @@ function _AFT.bindingEventHandler(eventObj)
 end
 
 function _evt_catcher_ (source, action, eventObj)
-	print(Dump_Table(eventObj))
 	if eventObj.type == "event" then
 		_AFT.bindingEventHandler(eventObj)
 	elseif eventObj.type == "daemon" or eventObj.type == "request" then
@@ -133,16 +132,17 @@ function _AFT.assertEvtReceived(eventName)
 	end
 
 	_AFT.assertIsTrue(count > 0, "No event '".. eventName .."' received")
+
+	if _AFT.monitored_events[eventName].cb then
+		local data_n = #_AFT.monitored_events[eventName].data
+		_AFT.monitored_events[eventName].cb(eventName, _AFT.monitored_events[eventName].data[data_n])
+	end
 end
 
 function _AFT.testEvtReceived(testName, eventName, timeout)
 	table.insert(_AFT.tests_list, {testName, function()
 		if timeout then sleep(timeout) end
 		_AFT.assertEvtReceived(eventName)
-		if _AFT.monitored_events[eventName].cb then
-			local data_n = #_AFT.monitored_events[eventName].data
-			_AFT.monitored_events[eventName].cb(eventName, _AFT.monitored_events[eventName].data[data_n])
-		end
 	end})
 end
 
