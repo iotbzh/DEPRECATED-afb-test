@@ -403,7 +403,7 @@ callback let you add assertions and enrich the test.
 
 #### LuaUnit Assertion functions
 
-#####General Assertions**
+#####General Assertions
     * **assertEquals**
         Alias: assert_equals()
 
