@@ -403,7 +403,7 @@ callback let you add assertions and enrich the test.
 
 #### LuaUnit Assertion functions
 
-#####General Assertions
+##### General Assertions
 
 * **assertEquals**
     Alias: assert_equals()
@@ -440,7 +440,7 @@ callback let you add assertions and enrich the test.
 
     Assert that two floating point numbers are not almost equal.
 
-#####Value assertions
+##### Value assertions
 
 * **assertTrue(value)**
 
@@ -489,7 +489,7 @@ callback let you add assertions and enrich the test.
 
     Assert that two variables are not identical, in the sense that they do not refer to the same value. See assertIs() for more details.
 
-#####String assertions
+##### String assertions
 
 Assertions related to string and patterns.
 
@@ -533,7 +533,7 @@ Assertions related to string and patterns.
 
     If start and final are not provided or are nil, the pattern must match the full string, from start to end. The functions allows to specify the expected start and end position of the pattern in the string.
 
-#####Error assertions
+##### Error assertions
 
 Error related assertions, to verify error generation and error messages.
 
@@ -573,7 +573,7 @@ Error related assertions, to verify error generation and error messages.
     Note that matching is done from the start to the end of the error message. Be sure to escape magic all magic characters with % (like -+.?\*) .
 
 
-#####Type assertions
+##### Type assertions
 
 The following functions all perform type checking on their argument. If the received value is not of the right type, the failure message will contain the expected type, the received type and the received value to help you identify better the problem.
 
@@ -625,7 +625,7 @@ The following functions all perform type checking on their argument. If the rece
 
     Assert that the argument is a coroutine (an object with type thread ).
 
-#####Table assertions
+##### Table assertions
 
 * **assertItemsEquals(actual, expected)**
 
