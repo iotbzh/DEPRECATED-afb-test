@@ -52,11 +52,11 @@ end
 ]]
 
 function _AFT.addEventToMonitor(eventName, callback)
-	_AFT.monitored_events[eventName] = { cb = callback }
+	_AFT.monitored_events[eventName] = { cb = callback, receivedCount = 0 }
 end
 
 function _AFT.addLogToMonitor(api, type, message, callback)
-	_AFT.monitored_events[message] = { api = api, type = type, cb = callback }
+	_AFT.monitored_events[message] = { api = api, type = type, cb = callback, receivedCount = 0 }
 end
 
 function _AFT.incrementCount(dict)
@@ -125,6 +125,20 @@ end
   Assert and test functions about the event part.
 ]]
 
+function _AFT.assertEvtNotReceived(eventName)
+	local count = 0
+	if _AFT.monitored_events[eventName].receivedCount then
+		count = _AFT.monitored_events[eventName].receivedCount
+	end
+
+	_AFT.assertIsTrue(count == 0, "Event '".. eventName .."' received but it shouldn't")
+
+	if _AFT.monitored_events[eventName].cb then
+		local data_n = #_AFT.monitored_events[eventName].data
+		_AFT.monitored_events[eventName].cb(eventName, _AFT.monitored_events[eventName].data[data_n])
+	end
+end
+
 function _AFT.assertEvtReceived(eventName)
 	local count = 0
 	if _AFT.monitored_events[eventName].receivedCount then
@@ -137,6 +151,13 @@ function _AFT.assertEvtReceived(eventName)
 		local data_n = #_AFT.monitored_events[eventName].data
 		_AFT.monitored_events[eventName].cb(eventName, _AFT.monitored_events[eventName].data[data_n])
 	end
+end
+
+function _AFT.testEvtNotReceived(testName, eventName, timeout)
+	table.insert(_AFT.tests_list, {testName, function()
+		if timeout then sleep(timeout) end
+		_AFT.assertEvtNotReceived(eventName)
+	end})
 end
 
 function _AFT.testEvtReceived(testName, eventName, timeout)
@@ -375,6 +396,7 @@ local _AFT_list_of_funcs = {
 	{ 'assertVerbError', 'assertVerbResponseEqualsError' },
 	{ 'assertVerbError', 'assertVerbCbError' },
 	{ 'assertEvtReceived', 'assertLogReceived' },
+	{ 'assertEvtNotReceived', 'assertLogNotReceived' },
 	{ 'testVerb',      'testVerbStatusSuccess' },
 	{ 'testVerb',      'testVerbResponseEquals' },
 	{ 'testVerb',      'testVerbCb' },
@@ -382,6 +404,7 @@ local _AFT_list_of_funcs = {
 	{ 'testVerbError', 'testVerbResponseEqualsError' },
 	{ 'testVerbError', 'testVerbCbError' },
 	{ 'testEvtReceived', 'testLogReceived' },
+	{ 'testEvtNotReceived', 'testLogNotReceived' },
 }
 
 -- Import all luaunit assertion function to _AFT object
