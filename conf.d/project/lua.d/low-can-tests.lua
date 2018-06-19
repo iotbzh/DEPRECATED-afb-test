@@ -18,8 +18,7 @@
 
     NOTE: strict mode: every global variables should be prefixed by '_'
 --]]
-
-_AFT.testCustom("Test_detection_is_off", function()
+_AFT.testCustom("Test_01/Step_2", function()
     local logMsg = "signal: Engine is off, diagnostic_messages.engine.speed won't received responses until it's on"
     _AFT.addLogToMonitor("low-can", "warning", logMsg)
 
@@ -27,7 +26,7 @@ _AFT.testCustom("Test_detection_is_off", function()
     _AFT.assertLogReceived(logMsg)
 end)
 
-_AFT.testCustom("Test_turning_on", function()
+_AFT.testCustom("Test_01/Step_3", function()
     _AFT.assertVerbStatusSuccess("low-can","subscribe", { event = "diagnostic_messages.engine.speed" })
 
     local evt = "low-can/diagnostic_messages"
@@ -41,7 +40,7 @@ _AFT.testCustom("Test_turning_on", function()
     end)
 end)
 
-_AFT.testCustom("Test_detection_is_on", function()
+_AFT.testCustom("Test_01/Step_4", function()
     local logMsg = "signal: Engine is off, diagnostic_messages.engine.speed won't received responses until it's on"
     _AFT.addLogToMonitor("low-can", "warning", logMsg)
 
@@ -49,11 +48,11 @@ _AFT.testCustom("Test_detection_is_on", function()
     _AFT.assertLogNotReceived(logMsg)
 end)
 
-_AFT.testCustom("Step_5", function()
+_AFT.testCustom("Test_01/Step_5", function()
   os.execute("pkill canplayer")
 end)
 
-_AFT.testCustom("Step_6", function()
+_AFT.testCustom("Test_01/Step_6", function()
   local logMsg = "signal: Engine is off, diagnostic_messages.engine.speed won't received responses until it's on"
   _AFT.addLogToMonitor("low-can", "warning", logMsg)
 
