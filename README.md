@@ -406,7 +406,6 @@ callback let you add assertions and enrich the test.
 ##### General Assertions
 
 * **assertEquals**
-    Alias: assert_equals()
 
     Assert that two values are equal.
 
@@ -420,7 +419,6 @@ callback let you add assertions and enrich the test.
 
 * **assertNotEquals(actual, expected)**
 
-    Alias: assert_not_equals()
 
     Assert that two values are different. The assertion fails if the two values are identical.
 
@@ -428,7 +426,6 @@ callback let you add assertions and enrich the test.
 
 * **assertAlmostEquals(actual, expected, margin)**
 
-    Alias: assert_almost_equals()
 
     Assert that two floating point numbers are almost equal.
 
@@ -436,7 +433,6 @@ callback let you add assertions and enrich the test.
 
 * **assertNotAlmostEquals(actual, expected, margin)**
 
-    Alias: assert_not_almost_equals()
 
     Assert that two floating point numbers are not almost equal.
 
@@ -444,31 +440,28 @@ callback let you add assertions and enrich the test.
 
 * **assertTrue(value)**
 
-    Alias: assert_true()
 
     Assert that a given value compares to true. Lua coercion rules are applied so that values like 0, "", 1.17 all compare to true.
 
 * **assertFalse(value)**
 
-    Alias: assert_false()
 
     Assert that a given value compares to false. Lua coercion rules are applied so that only nil and false all compare to false.
 
 * **assertNil(value)**
 
-    Aliases: assert_nil(), assertIsNil(), assert_is_nil()
+    Alias: assertIsNil()
 
     Assert that a given value is nil .
 
 * **assertNotNil(value)**
 
-    Aliases: assert_not_nil(), assertNotIsNil(), assert_not_is_nil()
+    Aliases: assertNotIsNil()
 
     Assert that a given value is not nil . Lua coercion rules are applied so that values like 0, "", false all validate the assertion.
 
 * **assertIs(actual, expected)**
 
-    Alias: assert_is()
 
     Assert that two variables are identical. For string, numbers, boolean and for nil, this gives the same result as assertEquals() . For the other types, identity means that the two variables refer to the same object.
 
@@ -485,7 +478,6 @@ callback let you add assertions and enrich the test.
 
 * **assertNotIs(actual, expected)**
 
-    Alias: assert_not_is()
 
     Assert that two variables are not identical, in the sense that they do not refer to the same value. See assertIs() for more details.
 
@@ -495,7 +487,6 @@ Assertions related to string and patterns.
 
 * **assertStrContains(str, sub[, useRe])**
 
-    Alias: assert_str_contains()
 
     Assert that a string contains the given substring or pattern.
 
@@ -503,7 +494,6 @@ Assertions related to string and patterns.
 
 * **assertStrIContains(str, sub)**
 
-    Alias: assert_str_icontains()
 
     Assert that a string contains the given substring, irrespective of the case.
 
@@ -511,7 +501,6 @@ Assertions related to string and patterns.
 
 * **assertNotStrContains(str, sub, useRe)**
 
-    Alias: assert_not_str_contains()
 
     Assert that a string does not contain a given substring or pattern.
 
@@ -519,7 +508,6 @@ Assertions related to string and patterns.
 
 * **assertNotStrIContains(str, sub)**
 
-    Alias: assert_not_str_icontains()
 
     Assert that a string does not contain the given substring, irrespective of the case.
 
@@ -527,7 +515,6 @@ Assertions related to string and patterns.
 
 * **assertStrMatches(str, pattern[, start[, final]])**
 
-    Alias: assert_str_matches()
 
     Assert that a string matches the full pattern pattern.
 
@@ -539,7 +526,6 @@ Error related assertions, to verify error generation and error messages.
 
 * **assertError(func, ...)**
 
-    Alias: assert_error()
 
     Assert that calling functions func with the arguments yields an error. If the function does not yield an error, the assertion fails.
 
@@ -552,7 +538,6 @@ Error related assertions, to verify error generation and error messages.
 
 * **assertErrorMsgEquals(expectedMsg, func, ...)**
 
-    Alias: assert_error_msg_equals()
 
     Assert that calling function func will generate exactly the given error message. If the function does not yield an error, or if the error message is not identical, the assertion fails.
 
@@ -560,13 +545,11 @@ Error related assertions, to verify error generation and error messages.
 
 * **assertErrorMsgContains(partialMsg, func, ...)**
 
-    Alias: assert_error_msg_contains()
 
     Assert that calling function func will generate an error message containing partialMsg . If the function does not yield an error, or if the expected message is not contained in the error message, the assertion fails.
 
 * **assertErrorMsgMatches(expectedPattern, func, ...)**
 
-    Alias: assert_error_msg_matches()
 
     Assert that calling function func will generate an error message matching expectedPattern . If the function does not yield an error, or if the error message does not match the provided patternm the assertion fails.
 
@@ -579,49 +562,41 @@ The following functions all perform type checking on their argument. If the rece
 
 * **assertIsNumber(value)**
 
-    Aliases: assertNumber(), assert_is_number(), assert_number()
 
     Assert that the argument is a number (integer or float)
 
 * **assertIsString(value)**
 
-    Aliases: assertString(), assert_is_string(), assert_string()
 
     Assert that the argument is a string.
 
 * **assertIsTable(value)**
 
-    Aliases: assertTable(), assert_is_table(), assert_table()
 
     Assert that the argument is a table.
 
 * **assertIsBoolean(value)**
 
-    Aliases: assertBoolean(), assert_is_boolean(), assert_boolean()
 
     Assert that the argument is a boolean.
 
 * **assertIsNil(value)**
 
-    Aliases: assertNil(), assert_is_nil(), assert_nil()
 
     Assert that the argument is a nil.
 
 * **assertIsFunction(value)**
 
-    Aliases: assertFunction(), assert_is_function(), assert_function()
 
     Assert that the argument is a function.
 
 * **assertIsUserdata(value)**
 
-    Aliases: assertUserdata(), assert_is_userdata(), assert_userdata()
 
     Assert that the argument is a userdata.
 
-* **assertIsCoroutine(value)**
+* **assertThread(value)**
 
-    Aliases: assertCoroutine(), assert_is_coroutine(), assert_coroutine(), assertIsThread(), assertThread(), assert_is_thread(), assert_thread()
 
     Assert that the argument is a coroutine (an object with type thread ).
 
@@ -629,7 +604,6 @@ The following functions all perform type checking on their argument. If the rece
 
 * **assertItemsEquals(actual, expected)**
 
-    Alias: assert_items_equals()
 
     Assert that two tables contain the same items, irrespective of their keys.
 
