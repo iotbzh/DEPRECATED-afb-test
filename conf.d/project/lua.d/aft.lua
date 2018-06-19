@@ -389,6 +389,8 @@ local luaunit_list_of_functions = {
 
 local _AFT_list_of_funcs = {
 	-- AF Binder generic assertions
+	{ 'addEventToMonitor', 'resetEventReceivedCount' },
+	{ 'addLogToMonitor', 'resetLogReceivedCount' },
 	{ 'assertVerb',      'assertVerbStatusSuccess' },
 	{ 'assertVerb',      'assertVerbResponseEquals' },
 	{ 'assertVerb',      'assertVerbCb' },
