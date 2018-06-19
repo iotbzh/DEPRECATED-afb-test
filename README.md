@@ -529,7 +529,7 @@ callback let you add assertions and enrich the test.
     verification is done by dividing by the provided number and verifying that it yields
     *minus infinity* . If provided, *extra_msg* is a string which will be printed along with the failure message.
 
-    Be careful when dealing with *+0* and *-0*, see :ref:`MinusZero`
+    Be careful when dealing with *+0* and *-0*
 
 
 ##### String assertions
