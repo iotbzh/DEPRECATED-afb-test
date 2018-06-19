@@ -405,7 +405,7 @@ callback let you add assertions and enrich the test.
 
 ##### General Assertions
 
-* **assertEquals**
+* **assertEquals(actual, expected)**
 
     Assert that two values are equal.
 
@@ -438,27 +438,37 @@ callback let you add assertions and enrich the test.
 
 ##### Value assertions
 
-* **assertTrue(value)**
+* **assertEvalToTrue(value)**
+
+    Assert that a given value evals to true. Lua coercion rules are applied so that values like 0,"",1.17 succeed
+    in this assertion. If provided, extra_msg is a string which will be printed along with the failure message.
+
+* **assertEvalToFalse(Value)**
+
+    Assert that a given value eval to *false*. Lua coercion rules are applied so that *nil* and *false* succeed in this
+    assertion. If provided, extra_msg is a string which will be printed along with the failure message.
+
+* **assertIsTrue(value)**
 
 
     Assert that a given value compares to true. Lua coercion rules are applied so that values like 0, "", 1.17 all compare to true.
 
-* **assertFalse(value)**
+* **assertIsFalse(value)**
 
 
     Assert that a given value compares to false. Lua coercion rules are applied so that only nil and false all compare to false.
 
-* **assertNil(value)**
+* **assertIsNil(value)**
 
-    Alias: assertIsNil()
 
     Assert that a given value is nil .
 
-* **assertNotNil(value)**
+* **assertNotIsNil(value)**
 
-    Aliases: assertNotIsNil()
+    Assert that a given value is not *nil* . Lua coercion rules are applied
+    so that values like ``0``, ``""``, ``false`` all validate the assertion.
+    If provided, *extra_msg* is a string which will be printed along with the failure message.
 
-    Assert that a given value is not nil . Lua coercion rules are applied so that values like 0, "", false all validate the assertion.
 
 * **assertIs(actual, expected)**
 
@@ -480,6 +490,47 @@ callback let you add assertions and enrich the test.
 
 
     Assert that two variables are not identical, in the sense that they do not refer to the same value. See assertIs() for more details.
+
+##### Scientific assertions
+
+>**Note**
+>If you need to deal with value minus zero, be very careful because Lua versions are inconsistent on how they treat the >syntax -0 : it creates either a plus zero or a minus zero . Multiplying or dividing 0 by -1 also yields inconsistent >results. The reliable way to create the -0 value is : minusZero = -1 / (1/0)
+
+* **assertIsNaN(value)**
+    Assert that a given number is a *NaN* (Not a Number), according to the definition of IEEE-754_ .
+    If provided, *extra_msg* is a string which will be printed along with the failure message.
+
+* **assertIsPlusInf(value)**
+
+    Assert that a given number is *plus infinity*, according to the definition of IEEE-754_ .
+    If provided, *extra_msg* is a string which will be printed along with the failure message.
+
+* **assertIsMinusInf(value)**
+
+    Assert that a given number is *minus infinity*, according to the definition of IEEE-754_ .
+    If provided, *extra_msg* is a string which will be printed along with the failure message.
+
+* **assertIsInf(value)**
+
+    Assert that a given number is *infinity* (either positive or negative), according to the definition of IEEE-754_ .
+    If provided, *extra_msg* is a string which will be printed along with the failure message.
+
+* **assertIsPlusZero(value)**
+
+    Assert that a given number is *+0*, according to the definition of IEEE-754_ . The
+    verification is done by dividing by the provided number and verifying that it yields
+    *infinity* . If provided, *extra_msg* is a string which will be printed along with the failure message.
+
+    Be careful when dealing with *+0* and *-0*, see note above
+
+* **assertIsMinusZero(value)**
+
+    Assert that a given number is *-0*, according to the definition of IEEE-754_ . The
+    verification is done by dividing by the provided number and verifying that it yields
+    *minus infinity* . If provided, *extra_msg* is a string which will be printed along with the failure message.
+
+    Be careful when dealing with *+0* and *-0*, see :ref:`MinusZero`
+
 
 ##### String assertions
 
@@ -580,11 +631,6 @@ The following functions all perform type checking on their argument. If the rece
 
     Assert that the argument is a boolean.
 
-* **assertIsNil(value)**
-
-
-    Assert that the argument is a nil.
-
 * **assertIsFunction(value)**
 
 
@@ -595,10 +641,14 @@ The following functions all perform type checking on their argument. If the rece
 
     Assert that the argument is a userdata.
 
-* **assertThread(value)**
+* **assertIsThread(value)**
 
 
     Assert that the argument is a coroutine (an object with type thread ).
+
+* **assertNotIsThread(value)**
+
+    Assert that the argument is a not coroutine (an object with type thread ).
 
 ##### Table assertions
 
