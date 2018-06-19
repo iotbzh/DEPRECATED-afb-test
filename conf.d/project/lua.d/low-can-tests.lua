@@ -48,3 +48,15 @@ _AFT.testCustom("Test_detection_is_on", function()
     _AFT.assertVerbStatusSuccess("low-can","subscribe", { event = "diagnostic_messages.engine.speed" })
     _AFT.assertLogNotReceived(logMsg)
 end)
+
+_AFT.testCustom("Step_5", function()
+  os.execute("pkill canplayer")
+end)
+
+_AFT.testCustom("Step_6", function()
+  local logMsg = "signal: Engine is off, diagnostic_messages.engine.speed won't received responses until it's on"
+  _AFT.addLogToMonitor("low-can", "warning", logMsg)
+
+  _AFT.assertVerbStatusSuccess("low-can","subscribe", { event = "diagnostic_messages.engine.speed" })
+  _AFT.assertLogReceived(logMsg)
+end)
