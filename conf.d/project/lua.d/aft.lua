@@ -347,8 +347,12 @@ function _launch_test(context, args)
 	_AFT.context = context
 	AFB:servsync(_AFT.context, "monitor", "set", { verbosity = "debug" })
 	AFB:servsync(_AFT.context, "monitor", "trace", { add = { api = args.trace, request = "vverbose", daemon = "vverbose", event = "push_after" }})
-	for _,f in pairs(args.files) do
-		dofile('var/'..f)
+	if args.files and type(args.files) == 'table' then
+		for _,f in pairs(args.files) do
+			dofile('var/'..f)
+		end
+	elseif type(args.files) == 'string' then
+		dofile('var/'..args.files)
 	end
 
 	lu.LuaUnit:runSuiteByInstances(_AFT.tests_list)

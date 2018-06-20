@@ -16,7 +16,7 @@
         "action": "lua://AFT#_launch_test",
         "args": {
             "trace": "hello",
-            "files": ["helloworld.lua"]
+            "files": "helloworld.lua"
         }
     }
 }

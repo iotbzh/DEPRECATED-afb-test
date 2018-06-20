@@ -251,8 +251,6 @@ Specify which api to trace using a pattern.
 
 Edit the JSON array to point to your tests files.
 
-> **CAUTION** : It must stay a JSON array, don't change the type
-
 Here is an example:
 
 ```json
