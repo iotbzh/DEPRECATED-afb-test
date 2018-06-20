@@ -44,6 +44,52 @@ is available from the LUA file `conf.d/project/lua.d/helloworld.lua`.
 
 The example will run some basics tests on API verb calls and events received.
 
+```lua
+function _callback(responseJ)
+  _AFT.assertStrContains(responseJ.response, "Some String")
+end
+
+function _callbackError(responseJ)
+  _AFT.assertStrContains(responseJ.request.info, "Ping Binder Daemon fails")
+end
+
+function _callbackEvent(eventName, eventData)
+  _AFT.assertEquals(eventData, {data = { key = 'weird others data', another_key = 123.456 }})
+end
+
+_AFT.addEventToMonitor("hello/anEvent")
+_AFT.addEventToMonitor("hello/anotherEvent", _callbackEvent)
+_AFT.addLogToMonitor("hello", "warning", "verbose called for My Warning message!")
+
+_AFT.testVerbStatusSuccess('testPingSuccess','hello', 'ping', {})
+_AFT.testVerbResponseEquals('testPingSuccess','hello', 'ping', {}, "Some String")
+_AFT.testVerbResponseEquals('testPingSuccess','hello', 'ping', {}, "Unexpected String")
+_AFT.testVerbCb('testPingSuccess','hello', 'ping', {}, _callback)
+_AFT.testVerbStatusError('testPingError', 'hello', 'pingfail', {})
+_AFT.testVerbResponseEqualsError('testPingError', 'hello', 'pingfail', {}, "Ping Binder Daemon fails")
+_AFT.testVerbResponseEqualsError('testPingError', 'hello', 'pingfail', {}, "Ping Binder Daemon succeed")
+_AFT.testVerbCbError('testPingError', 'hello', 'pingfail', {}, _callbackError)
+
+_AFT.testVerbStatusSuccess('testEventAdd', 'hello', 'eventadd', {tag = 'event', name = 'anEvent'})
+_AFT.testVerbStatusSuccess('testEventSub', 'hello', 'eventsub', {tag = 'event'})
+_AFT.testVerbStatusSuccess('testEventPush', 'hello', 'eventpush', {tag = 'event', data = { key = 'some data', another_key = 123}})
+
+_AFT.testVerbStatusSuccess('testEventAdd', 'hello', 'eventadd', {tag = 'evt', name = 'anotherEvent'})
+_AFT.testVerbStatusSuccess('testEventSub', 'hello', 'eventsub', {tag = 'evt'})
+_AFT.testVerbStatusSuccess('testEventPush', 'hello', 'eventpush', {tag = 'evt', data = { key = 'weird others data', another_key = 123.456}})
+
+_AFT.testVerbStatusSuccess('testGenerateWarning', 'hello', 'verbose', {level = 4, message = 'My Warning message!'})
+
+_AFT.testEvtReceived("testEvent", "hello/anEvent")
+_AFT.testEvtReceived("testEventCb", "hello/anotherEvent")
+
+_AFT.testLogReceived("LogReceived", "verbose called for My Warning message!")
+
+_AFT.testCustom("mytest", function()
+  _AFT.assertEquals(false, false)
+end)
+```
+
 > **NOTE**: I suggest you to take this lua file example to make your own test
 > then read the following the chapter if needed to write more complicated tests.
 
@@ -205,6 +251,8 @@ Specify which api to trace using a pattern.
 
 Edit the JSON array to point to your tests files.
 
+> **CAUTION** : It must stay a JSON array, don't change the type
+
 Here is an example:
 
 ```json
@@ -231,8 +279,6 @@ Here is an example:
     }
 }
 ```
-
-> **CAUTION** : It must stay a JSON array, don't change the type
 
 ### LUA Test files
 
@@ -286,7 +332,7 @@ callback let you add assertions and enrich the test.
 
     Should return success on failure.
 
-* **_AFT.testEvtReceived(testName, eventName, timeout)**
+* **_AFT.testEvtReceived(testName, eventName)**
 
     Prior to be able to check that an event has been received, you have to
     register the event with the test framework using **_AFT.addEventToMonitor**
@@ -295,13 +341,7 @@ callback let you add assertions and enrich the test.
     Check if an event has been correctly received. An event name use the
     application framework naming scheme: **api/event_name**.
 
-    The timeout argument is in seconds and could be omitted if you doesn't need
-    to wait to receive the event.
-
-> **NOTE**: about now this timeout arguments simply wait a number of seconds
-> instead of interrupt as soon as the event has been received.
-
-* **_AFT.testLogReceived(testName, logMsg, timeout)**
+* **_AFT.testLogReceived(testName, logMsg)**
 
     Prior to be able to check that an event has been received, you have to
     register the event with the test framework using **_AFT.addLogToMonitor**
@@ -311,11 +351,24 @@ callback let you add assertions and enrich the test.
     message is caracterized by its *api* and the message level *error*,
     *warning*, *notice*, *info* or *debug*.
 
-    The timeout argument is in seconds and could be omitted if you doesn't need
-    to wait to receive the event.
+* **_AFT.testEvtNotReceived(testName, eventName)**
 
-> **NOTE**: about now this timeout arguments simply wait a number of seconds
-> instead of interrupt as soon as the event has been received.
+    Prior to be able to check that an event has been received, you have to
+    register the event with the test framework using **_AFT.addEventToMonitor**
+    function.
+
+    Check if an event has been correctly received. An event name use the
+    application framework naming scheme: **api/event_name**.
+
+* **_AFT.testLogNotReceived(testName, logMsg)**
+
+    Prior to be able to check that an event has been received, you have to
+    register the event with the test framework using **_AFT.addLogToMonitor**
+    function.
+
+    Check if a log message sent by the daemon has been correctly received. A log
+    message is caracterized by its *api* and the message level *error*,
+    *warning*, *notice*, *info* or *debug*.
 
 #### Binding Assert functions
 
@@ -357,13 +410,7 @@ callback let you add assertions and enrich the test.
     Check if an event has been correctly received. An event name use the
     application framework naming scheme: **api/event_name**.
 
-    The timeout argument is in seconds and could be omitted if you doesn't need
-    to wait to receive the event.
-
-> **NOTE**: about now this timeout arguments simply wait a number of seconds
-> instead of interrupt as soon as the event has been received.
-
-* **_AFT.assertLogReceived(testName, logMsg, timeout)**
+* **_AFT.assertLogReceived(testName, logMsg)**
 
     Prior to be able to check that an event has been received, you have to
     register the event with the test framework using **_AFT.addLogToMonitor**
@@ -372,12 +419,24 @@ callback let you add assertions and enrich the test.
     Check if a log message sent by the daemon has been correctly received. A log
     message is caracterized by its *api* and the message level *error*,
     *warning*, *notice*, *info* or *debug*.
+* **_AFT.assertEvtNotReceived(eventName)**
 
-    The timeout argument is in seconds and could be omitted if you doesn't need
-    to wait to receive the event.
+    Prior to be able to check that an event has been received, you have to
+    register the event with the test framework using **_AFT.addEventToMonitor**
+    function.
 
-> **NOTE**: about now this timeout arguments simply wait a number of seconds
-> instead of interrupt as soon as the event has been received.
+    Check if an event has been correctly received. An event name use the
+    application framework naming scheme: **api/event_name**.
+
+* **_AFT.assertLogNotReceived(testName, logMsg)**
+
+    Prior to be able to check that an event has been received, you have to
+    register the event with the test framework using **_AFT.addLogToMonitor**
+    function.
+
+    Check if a log message sent by the daemon has been correctly received. A log
+    message is caracterized by its *api* and the message level *error*,
+    *warning*, *notice*, *info* or *debug*.
 
 #### Test Framework functions
 
@@ -411,14 +470,13 @@ callback let you add assertions and enrich the test.
 
     For tables, the comparison is a deep comparison :
 
-    * number of elements must be the same
-    * tables must contain the same keys
-    * each key must contain the same values. The values are also compared recursively with deep comparison.
+  * number of elements must be the same
+  * tables must contain the same keys
+  * each key must contain the same values. The values are also compared recursively with deep comparison.
 
     LuaUnit provides other table-related assertions, see [Table assertions](http://luaunit.readthedocs.io/en/luaunit_v3_2_1/#assert-table)
 
 * **assertNotEquals(actual, expected)**
-
 
     Assert that two values are different. The assertion fails if the two values are identical.
 
@@ -426,13 +484,11 @@ callback let you add assertions and enrich the test.
 
 * **assertAlmostEquals(actual, expected, margin)**
 
-
     Assert that two floating point numbers are almost equal.
 
     When comparing floating point numbers, strict equality does not work. Computer arithmetic is so that an operation that mathematically yields 1.00000000 might yield 0.999999999999 in lua . That’s why you need an almost equals comparison, where you specify the error margin.
 
 * **assertNotAlmostEquals(actual, expected, margin)**
-
 
     Assert that two floating point numbers are not almost equal.
 
@@ -450,16 +506,13 @@ callback let you add assertions and enrich the test.
 
 * **assertIsTrue(value)**
 
-
     Assert that a given value compares to true. Lua coercion rules are applied so that values like 0, "", 1.17 all compare to true.
 
 * **assertIsFalse(value)**
 
-
     Assert that a given value compares to false. Lua coercion rules are applied so that only nil and false all compare to false.
 
 * **assertIsNil(value)**
-
 
     Assert that a given value is nil .
 
@@ -469,9 +522,7 @@ callback let you add assertions and enrich the test.
     so that values like ``0``, ``""``, ``false`` all validate the assertion.
     If provided, *extra_msg* is a string which will be printed along with the failure message.
 
-
 * **assertIs(actual, expected)**
-
 
     Assert that two variables are identical. For string, numbers, boolean and for nil, this gives the same result as assertEquals() . For the other types, identity means that the two variables refer to the same object.
 
@@ -487,7 +538,6 @@ callback let you add assertions and enrich the test.
     luaunit.assertIs(t1,t2) -- fail`
 
 * **assertNotIs(actual, expected)**
-
 
     Assert that two variables are not identical, in the sense that they do not refer to the same value. See assertIs() for more details.
 
@@ -531,13 +581,11 @@ callback let you add assertions and enrich the test.
 
     Be careful when dealing with *+0* and *-0*
 
-
 ##### String assertions
 
 Assertions related to string and patterns.
 
 * **assertStrContains(str, sub[, useRe])**
-
 
     Assert that a string contains the given substring or pattern.
 
@@ -545,13 +593,11 @@ Assertions related to string and patterns.
 
 * **assertStrIContains(str, sub)**
 
-
     Assert that a string contains the given substring, irrespective of the case.
 
     Not that unlike assertStrcontains(), you can not search for a pattern.
 
 * **assertNotStrContains(str, sub, useRe)**
-
 
     Assert that a string does not contain a given substring or pattern.
 
@@ -559,13 +605,11 @@ Assertions related to string and patterns.
 
 * **assertNotStrIContains(str, sub)**
 
-
     Assert that a string does not contain the given substring, irrespective of the case.
 
     Not that unlike assertNotStrcontains(), you can not search for a pattern.
 
 * **assertStrMatches(str, pattern[, start[, final]])**
-
 
     Assert that a string matches the full pattern pattern.
 
@@ -576,7 +620,6 @@ Assertions related to string and patterns.
 Error related assertions, to verify error generation and error messages.
 
 * **assertError(func, ...)**
-
 
     Assert that calling functions func with the arguments yields an error. If the function does not yield an error, the assertion fails.
 
@@ -589,23 +632,19 @@ Error related assertions, to verify error generation and error messages.
 
 * **assertErrorMsgEquals(expectedMsg, func, ...)**
 
-
     Assert that calling function func will generate exactly the given error message. If the function does not yield an error, or if the error message is not identical, the assertion fails.
 
     Be careful when using this function that error messages usually contain the file name and line number information of where the error was generated. This is usually inconvenient. To ignore the filename and line number information, you can either use a pattern with assertErrorMsgMatches() or simply check for the message containt with assertErrorMsgContains() .
 
 * **assertErrorMsgContains(partialMsg, func, ...)**
 
-
     Assert that calling function func will generate an error message containing partialMsg . If the function does not yield an error, or if the expected message is not contained in the error message, the assertion fails.
 
 * **assertErrorMsgMatches(expectedPattern, func, ...)**
 
-
     Assert that calling function func will generate an error message matching expectedPattern . If the function does not yield an error, or if the error message does not match the provided patternm the assertion fails.
 
     Note that matching is done from the start to the end of the error message. Be sure to escape magic all magic characters with % (like -+.?\*) .
-
 
 ##### Type assertions
 
@@ -613,36 +652,29 @@ The following functions all perform type checking on their argument. If the rece
 
 * **assertIsNumber(value)**
 
-
     Assert that the argument is a number (integer or float)
 
 * **assertIsString(value)**
-
 
     Assert that the argument is a string.
 
 * **assertIsTable(value)**
 
-
     Assert that the argument is a table.
 
 * **assertIsBoolean(value)**
-
 
     Assert that the argument is a boolean.
 
 * **assertIsFunction(value)**
 
-
     Assert that the argument is a function.
 
 * **assertIsUserdata(value)**
 
-
     Assert that the argument is a userdata.
 
 * **assertIsThread(value)**
-
 
     Assert that the argument is a coroutine (an object with type thread ).
 
@@ -653,7 +685,6 @@ The following functions all perform type checking on their argument. If the rece
 ##### Table assertions
 
 * **assertItemsEquals(actual, expected)**
-
 
     Assert that two tables contain the same items, irrespective of their keys.
 
