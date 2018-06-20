@@ -126,8 +126,8 @@ list(APPEND link_libraries afb-helpers)
 # CACHE STRING "Compilation flags for RELEASE build type.")
 
 set(CONTROL_SUPPORT_LUA 1)
-add_definitions(-DCONTROL_PLUGIN_PATH="${CMAKE_INSTALL_PREFIX}/${PROJECT_NAME}/lib/plugins:${CMAKE_BINARY_DIR}/package/lib/plugins:${CMAKE_BINARY_DIR}/package/var")
-add_definitions(-DCONTROL_CONFIG_PATH="${CMAKE_INSTALL_PREFIX}/${PROJECT_NAME}/etc:${CMAKE_BINARY_DIR}/package/etc")
+add_definitions(-DCONTROL_PLUGIN_PATH="./var:${CMAKE_INSTALL_PREFIX}/${PROJECT_NAME}/lib/plugins:${CMAKE_BINARY_DIR}/package/lib/plugins:${CMAKE_BINARY_DIR}/package/var")
+add_definitions(-DCONTROL_CONFIG_PATH="./etc:${CMAKE_INSTALL_PREFIX}/${PROJECT_NAME}/etc:${CMAKE_BINARY_DIR}/package/etc")
 add_definitions(-DCTL_PLUGIN_MAGIC=1286576532)
 add_definitions(-DUSE_API_DYN=1 -DCONTROL_SUPPORT_LUA)
 
