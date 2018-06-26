@@ -117,25 +117,3 @@ _AFT.testLogReceived("LogReceived", "verbose called for My Warning message!")
 _AFT.testCustom("mytest", function()
   _AFT.assertEquals(false, false)
 end)
-
---[[_AFT.assertVerbStatusSuccess("hello","ping",{})
-_AFT.assertVerbResponseEquals("hello","ping",{},"Some String")
-_AFT.assertVerbCb("hello","ping",{},"Some String",_callback)
-_AFT.assertVerbStatusError("hello","pingfail",{})
-_AFT.assertVerbResponseEqualsError("hello","pingfail",{},"Ping Binder Daemon failed")
-_AFT.assertVerbResponseEqualsError('hello', 'pingfail', {}, "Ping Binder Daemon succeed")
-_AFT.assertVerbCbError('hello', 'pingfail', {}, _callbackError)
-
-_AFT.assertVerbStatusSuccess('hello', 'eventadd', {tag = 'event', name = 'anEvent'})
-_AFT.assertVerbStatusSuccess('hello', 'eventsub', {tag = 'event'})
-_AFT.assertVerbStatusSuccess('hello', 'eventpush', {tag = 'event', data = { key = 'some data', another_key = 123}})
-
-_AFT.assertVerbStatusSuccess('hello', 'eventadd', {tag = 'evt', name = 'anotherEvent'})
-_AFT.assertVerbStatusSuccess('hello', 'eventsub', {tag = 'evt'})
-_AFT.assertVerbStatusSuccess('hello', 'eventpush', {tag = 'evt', data = { key = 'weird others data', another_key = 123.456}})
-
-_AFT.assertVerbStatusSuccess('hello', 'verbose', {level = 4, message = 'My Warning message!'})
-
-_AFT.assertEvtReceived("hello/anEvent")
-_AFT.assertEvtReceived("hello/anotherEvent")
---]]
