@@ -49,7 +49,8 @@ _AFT.testCustom("Test_01/Step_4", function()
 end)
 
 _AFT.testCustom("Test_01/Step_5", function()
-  os.execute("pkill canplayer")
+  local ret = os.execute("pkill canplayer")
+  _AFT.assertIsTrue(ret)
 end)
 
 _AFT.testCustom("Test_01/Step_6", function()
