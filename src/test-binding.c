@@ -63,10 +63,12 @@ static int CtrlLoadStaticVerbs(afb_dynapi *apiHandle, AFB_ApiVerbs *verbs) {
 };
 
 static int CtrlInitOneApi(AFB_ApiT apiHandle) {
-	int err = 0;
-	AFB_default = apiHandle; // hugely hack to make all V2 AFB_DEBUG to work in fileutils
+	// Hugely hack to make all V2 AFB_DEBUG to work in fileutils
+	AFB_default = apiHandle;
 
-	return err;
+	CtlConfigT *ctrlConfig = afb_dynapi_get_userdata(apiHandle);
+
+	return CtlConfigExec(apiHandle, ctrlConfig);
 }
 
 // next generation dynamic API-V3 mode
@@ -154,12 +156,6 @@ int afbBindingVdyn(afb_dynapi *apiHandle) {
 
 	// create one API per config file (Pre-V3 return code ToBeChanged)
 	status = afb_dynapi_new_api(apiHandle, ctrlConfig->api, ctrlConfig->info, 1, CtrlLoadOneApi, ctrlConfig);
-
-	err = CtlConfigExec(apiHandle, ctrlConfig);
-	if(err) {
-		AFB_ApiError(apiHandle, "Error at CtlConfigExec step");
-		return err;
-	}
 
 	return status;
 }
