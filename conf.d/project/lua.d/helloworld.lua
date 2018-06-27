@@ -53,89 +53,90 @@ _AFT.testVerbStatusSuccess('testEventPush', 'hello', 'eventpush', {tag = 'evt', 
 
 _AFT.testVerbStatusSuccess('testGenerateWarning', 'hello', 'verbose', {level = 4, message = 'My Warning message!'})
 
-_AFT.testVerbResponseEquals('testEventAdd', 'hello', 'eventadd', {tag = 'event', name = 'anEvent'},"Some String")
-_AFT.testVerbResponseEquals('testEventSub', 'hello', 'eventsub', {tag = 'event'},"Some String")
-_AFT.testVerbResponseEquals('testEventPush', 'hello', 'eventpush', {tag = 'event', data = { key = 'some data', another_key = 123}},"Some String")
-
-_AFT.testVerbResponseEquals('testEventAdd', 'hello', 'eventadd', {tag = 'evt', name = 'anotherEvent'},"Some String")
-_AFT.testVerbResponseEquals('testEventSub', 'hello', 'eventsub', {tag = 'evt'},"Some String")
-_AFT.testVerbResponseEquals('testEventPush', 'hello', 'eventpush', {tag = 'evt', data = { key = 'weird others data', another_key = 123.456}},"Some String")
-
-_AFT.testVerbResponseEquals('testEventAdd', 'hello', 'eventadd', {tag = 'event', name = 'anEvent'},"Unexpected String")
-_AFT.testVerbResponseEquals('testEventSub', 'hello', 'eventsub', {tag = 'event'},"Unexpected String")
-_AFT.testVerbResponseEquals('testEventPush', 'hello', 'eventpush', {tag = 'event', data = { key = 'some data', another_key = 123}},"Unexpected String")
-
-_AFT.testVerbResponseEquals('testEventAdd', 'hello', 'eventadd', {tag = 'evt', name = 'anotherEvent'},"Unexpected String")
-_AFT.testVerbResponseEquals('testEventSub', 'hello', 'eventsub', {tag = 'evt'},"Unexpected String")
-_AFT.testVerbResponseEquals('testEventPush', 'hello', 'eventpush', {tag = 'evt', data = { key = 'weird others data', another_key = 123.456}},"Unexpected String")
-
-_AFT.testVerbCb('testEventAdd', 'hello', 'eventadd', {tag = 'event', name = 'anEvent'},_callback)
-_AFT.testVerbCb('testEventSub', 'hello', 'eventsub', {tag = 'event'},_callback)
-_AFT.testVerbCb('testEventPush', 'hello', 'eventpush', {tag = 'event', data = { key = 'some data', another_key = 123}},_callback)
-
-_AFT.testVerbCb('testEventAdd', 'hello', 'eventadd', {tag = 'evt', name = 'anotherEvent'},_callback)
-_AFT.testVerbCb('testEventSub', 'hello', 'eventsub', {tag = 'evt'},_callback)
-_AFT.testVerbCb('testEventPush', 'hello', 'eventpush', {tag = 'evt', data = { key = 'weird others data', another_key = 123.456}},_callback)
-
-_AFT.testVerbStatusError('testEventAddError', 'hello', 'eventadd', {tag = 'event', name = 'anEvent'})
-_AFT.testVerbStatusError('testEventSubError', 'hello', 'eventsub', {tag = 'event'})
-_AFT.testVerbStatusError('testEventPushError', 'hello', 'eventpush', {tag = 'event', data = { key = 'some data', another_key = 123}})
-
-_AFT.testVerbStatusError('testEventAddError', 'hello', 'eventadd', {tag = 'evt', name = 'anotherEvent'})
-_AFT.testVerbStatusError('testEventSubError', 'hello', 'eventsub', {tag = 'evt'})
-_AFT.testVerbStatusError('testEventPushError', 'hello', 'eventpush', {tag = 'evt', data = { key = 'weird others data', another_key = 123.456}})
-
-_AFT.testVerbResponseEqualsError('testEventAddError', 'hello', 'eventadd', {tag = 'event', name = 'anEvent'},"Ping Binder Daemon fails")
-_AFT.testVerbResponseEqualsError('testEventSubError', 'hello', 'eventsub', {tag = 'event'},"Ping Binder Daemon fails")
-_AFT.testVerbResponseEqualsError('testEventPushError', 'hello', 'eventpush', {tag = 'event', data = { key = 'some data', another_key = 123}},"Ping Binder Daemon fails")
-
-_AFT.testVerbResponseEqualsError('testEventAddError', 'hello', 'eventadd', {tag = 'evt', name = 'anotherEvent'},"Ping Binder Daemon fails")
-_AFT.testVerbResponseEqualsError('testEventSubError', 'hello', 'eventsub', {tag = 'evt'},"Ping Binder Daemon fails")
-_AFT.testVerbResponseEqualsError('testEventPushError', 'hello', 'eventpush', {tag = 'evt', data = { key = 'weird others data', another_key = 123.456}},"Ping Binder Daemon fails")
-
-_AFT.testVerbResponseEqualsError('testEventAddError', 'hello', 'eventadd', {tag = 'event', name = 'anEvent'},"Ping Binder Daemon succeed")
-_AFT.testVerbResponseEqualsError('testEventSubError', 'hello', 'eventsub', {tag = 'event'},"Ping Binder Daemon succeed")
-_AFT.testVerbResponseEqualsError('testEventPushError', 'hello', 'eventpush', {tag = 'event', data = { key = 'some data', another_key = 123}},"Ping Binder Daemon succeed")
-
-_AFT.testVerbResponseEqualsError('testEventAddError', 'hello', 'eventadd', {tag = 'evt', name = 'anotherEvent'},"Ping Binder Daemon succeed")
-_AFT.testVerbResponseEqualsError('testEventSubError', 'hello', 'eventsub', {tag = 'evt'},"Ping Binder Daemon succeed")
-_AFT.testVerbResponseEqualsError('testEventPushError', 'hello', 'eventpush', {tag = 'evt', data = { key = 'weird others data', another_key = 123.456}},"Ping Binder Daemon succeed")
-
-_AFT.testVerbCb('testEventAddError', 'hello', 'eventadd', {tag = 'event', name = 'anEvent'},_callbackError)
-_AFT.testVerbCb('testEventSubError', 'hello', 'eventsub', {tag = 'event'},_callbackError)
-_AFT.testVerbCb('testEventPushError', 'hello', 'eventpush', {tag = 'event', data = { key = 'some data', another_key = 123}},_callbackError)
-
-_AFT.testVerbCb('testEventAddError', 'hello', 'eventadd', {tag = 'evt', name = 'anotherEvent'},_callbackError)
-_AFT.testVerbCb('testEventSubError', 'hello', 'eventsub', {tag = 'evt'},_callbackError)
-_AFT.testVerbCb('testEventPushError', 'hello', 'eventpush', {tag = 'evt', data = { key = 'weird others data', another_key = 123.456}},_callbackError)
-
 _AFT.testEvtReceived("testEvent", "hello/anEvent")
 _AFT.testEvtReceived("testEventCb", "hello/anotherEvent")
 
 _AFT.testLogReceived("LogReceived", "verbose called for My Warning message!")
 
-_AFT.testCustom("mytest", function()
+local corout = coroutine.create( print )
+
+_AFT.testCustom("luaUnitAssertionsTest", function()
   _AFT.assertEquals(false, false)
+  _AFT.assertNotEquals(true,false)
+	_AFT.assertItemsEquals({1,2,3},{3,1,2})
+	_AFT.assertAlmostEquals(1.25 ,1.5,0.5)
+	_AFT.assertNotAlmostEquals(1.25,1.5,0.125)
+	_AFT.assertEvalToTrue(true)
+  _AFT.assertEvalToFalse(false)
+  
+  _AFT.assertStrContains("Hello I'm a string","string")
+  _AFT.assertStrContains("Hello I'm a second string","second",5)
+
+  _AFT.assertStrIContains("Hello I'm another string","I'm")
+  
+  _AFT.assertNotStrContains("Hello it's me again, the other string","banana")
+  _AFT.assertNotStrContains("Hello it's me again, the other string","banana",8)
+
+  _AFT.assertNotStrIContains("Hello it's not me this time !","trebuchet")
+  
+  _AFT.assertStrMatches("Automotive Grade Linux","Automotive Grade Linux")
+  _AFT.assertStrMatches("Automotive Grade Linux from IoT.bzh","Automotive Grade Linux",1,22)
+  _AFT.assertError(_AFT.assertEquals(true,true))
+
+  _AFT.assertErrorMsgEquals("attempt to call a nil value",
+                              _AFT.assertStrMatches("test assertErrorMsgEquals","test",1,4))
+	_AFT.assertErrorMsgContains("attempt to call",
+                              _AFT.assertStrMatches("test assertErrorMsgEquals","test",1,4))
+	_AFT.assertErrorMsgMatches('attempt to call a nil value',
+                              _AFT.assertStrMatches("test assertErrorMsgEquals","test",1,4))
+
+	_AFT.assertIs('toto','to'..'to')
+  _AFT.assertNotIs({1,2},{1,2})
+
+  _AFT.assertIsNumber(23)
+	_AFT.assertIsString("Lapin bihan")
+	_AFT.assertIsTable({1,2,3,4})
+	_AFT.assertIsBoolean(true)
+	_AFT.assertIsNil(nil)
+	_AFT.assertIsTrue(true)
+	_AFT.assertIsFalse(false)
+	_AFT.assertIsNaN(0/0)
+	_AFT.assertIsInf(1/0)
+	_AFT.assertIsPlusInf(1/0)
+	_AFT.assertIsMinusInf(-1/0)
+	_AFT.assertIsPlusZero(1/(1/0))
+	_AFT.assertIsMinusZero(-1/(1/0))
+	_AFT.assertIsFunction(print)
+	_AFT.assertIsThread(corout)
+  _AFT.assertIsUserdata(_AFT.context)
+
+  _AFT.assertNotIsNumber('a')
+	_AFT.assertNotIsString(2)
+	_AFT.assertNotIsTable(2)
+	_AFT.assertNotIsBoolean(2)
+	_AFT.assertNotIsNil(2)
+	_AFT.assertNotIsTrue(false)
+	_AFT.assertNotIsFalse(true)
+	_AFT.assertNotIsNaN(1)
+	_AFT.assertNotIsInf(2)
+	_AFT.assertNotIsPlusInf(2)
+	_AFT.assertNotIsMinusInf(2)
+	_AFT.assertNotIsPlusZero(2)
+	_AFT.assertNotIsMinusZero(2)
+	_AFT.assertNotIsFunction(2)
+	_AFT.assertNotIsThread(2)
+	_AFT.assertNotIsUserdata(2)
 end)
 
---[[_AFT.assertVerbStatusSuccess("hello","ping",{})
-_AFT.assertVerbResponseEquals("hello","ping",{},"Some String")
-_AFT.assertVerbCb("hello","ping",{},"Some String",_callback)
-_AFT.assertVerbStatusError("hello","pingfail",{})
-_AFT.assertVerbResponseEqualsError("hello","pingfail",{},"Ping Binder Daemon failed")
-_AFT.assertVerbResponseEqualsError('hello', 'pingfail', {}, "Ping Binder Daemon succeed")
-_AFT.assertVerbCbError('hello', 'pingfail', {}, _callbackError)
-
-_AFT.assertVerbStatusSuccess('hello', 'eventadd', {tag = 'event', name = 'anEvent'})
-_AFT.assertVerbStatusSuccess('hello', 'eventsub', {tag = 'event'})
-_AFT.assertVerbStatusSuccess('hello', 'eventpush', {tag = 'event', data = { key = 'some data', another_key = 123}})
-
-_AFT.assertVerbStatusSuccess('hello', 'eventadd', {tag = 'evt', name = 'anotherEvent'})
-_AFT.assertVerbStatusSuccess('hello', 'eventsub', {tag = 'evt'})
-_AFT.assertVerbStatusSuccess('hello', 'eventpush', {tag = 'evt', data = { key = 'weird others data', another_key = 123.456}})
-
-_AFT.assertVerbStatusSuccess('hello', 'verbose', {level = 4, message = 'My Warning message!'})
-
-_AFT.assertEvtReceived("hello/anEvent")
-_AFT.assertEvtReceived("hello/anotherEvent")
+--_AFT.resetEventReceivedCount()
+--_AFT.resetLogReceivedCount()
+print("################################################################s")
+_AFT.assertVerbStatusSuccess("hello","eventadd",{tag='event2', name='verbEventAddTest'})
+--[[_AFT.assertVerbResponseEquals("hello","eventunsub",{tag="event"},"yolo")
+_AFT.assertVerbCb()
+_AFT.assertVerbStatusError()
+_AFT.assertVerbResponseEqualsError()
+_AFT.assertVerbCbError()
+_AFT.assertLogReceived()
+_AFT.assertLogNotReceived()
 --]]
