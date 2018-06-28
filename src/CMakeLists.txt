@@ -21,7 +21,7 @@
 PROJECT_TARGET_ADD(test-binding)
 
     # Define project Targets
-    ADD_LIBRARY(${TARGET_NAME} MODULE test-binding.c)
+    ADD_LIBRARY(${TARGET_NAME} MODULE ${TARGET_NAME}.c fapis.c)
 
     SET_TARGET_PROPERTIES(${TARGET_NAME} PROPERTIES
 	PREFIX ""

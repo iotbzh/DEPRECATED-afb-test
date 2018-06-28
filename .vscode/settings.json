@@ -2,6 +2,14 @@
 	"C_Cpp.errorSquiggles": "Disabled",
 	"files.associations": {
 		"system_error": "c",
-		"time.h": "c"
+		"time.h": "c",
+		"test-binding.h": "c",
+		"stdio.h": "c",
+		"array": "cpp",
+		"forward_list": "cpp",
+		"vector": "cpp",
+		"initializer_list": "cpp",
+		"unordered_map": "cpp",
+		"string_view": "cpp"
 	}
 }

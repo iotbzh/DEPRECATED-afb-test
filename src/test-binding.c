@@ -22,7 +22,7 @@
 #include <time.h>
 
 #include "test-binding.h"
-
+#include "fapis.h"
 // default api to print log when apihandle not avaliable
 afb_dynapi *AFB_default;
 
@@ -31,6 +31,7 @@ static CtlSectionT ctrlSections[] = {
 	{.key = "resources", .loadCB = PluginConfig},
 	{.key = "onload", .loadCB = OnloadConfig},
 	{.key = "events", .loadCB = EventConfig},
+	{.key = "fapis", .loadCB = FapisConfig},
 	{.key = NULL}
 };
 
