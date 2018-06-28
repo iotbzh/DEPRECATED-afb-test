@@ -138,10 +138,9 @@ int afbBindingVdyn(afb_dynapi *apiHandle) {
 	AFB_ApiNotice(apiHandle, "Controller API='%s' info='%s'", ctrlConfig->api,
 			ctrlConfig->info);
 
-	err = wrap_json_pack(&resourcesJ, "{s[{ss, ss, ss, s[s]}]}", "resources",
+	err = wrap_json_pack(&resourcesJ, "{s[{ss, ss, ss}]}", "resources",
 		"uid", "AFT",
 		"info", "LUA Binder test framework",
-		"spath", "var/",
 		"libs", "aft.lua" );
 	err += wrap_json_pack(&eventsJ, "{s[{ss, ss}]}", "events",
 		"uid", "monitor/trace",
