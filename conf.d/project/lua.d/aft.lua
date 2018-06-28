@@ -18,10 +18,16 @@
     NOTE: strict mode: every global variables should be prefixed by '_'
 --]]
 
-package.path = package.path .. ';./var/?.lua'
 local lu = require('luaunit')
 lu.LuaUnit:setOutputType('JUNIT')
 lu.LuaUnit.fname = "var/jUnitResults.xml"
+
+-- Use our own print function to redirect it to a file the standard output
+_standard_print = print
+print = function(...)
+	io.write(... .. '\n')
+	_standard_print(...)
+end
 
 _AFT = {
 	context = _ctx,
@@ -38,6 +44,10 @@ function _AFT.setJunitFile(filePath)
 	lu.LuaUnit.fname = filePath
 end
 
+function _AFT.setOutputFile(filePath)
+	local file = assert(io.open(filePath, "w+"))
+	io.output(file)
+end
 --[[
   Events listener and assertion functions to test correctness of received
   event data.
@@ -345,6 +355,8 @@ end
 
 function _launch_test(context, args)
 	_AFT.context = context
+
+	_AFT.setOutputFile("var/test_results.log")
 	AFB:servsync(_AFT.context, "monitor", "set", { verbosity = "debug" })
 	AFB:servsync(_AFT.context, "monitor", "trace", { add = { api = args.trace, request = "vverbose", daemon = "vverbose", event = "push_after" }})
 	if args.files and type(args.files) == 'table' then
