@@ -5,6 +5,33 @@
 	"version": "0.2.0",
 	"configurations": [
 		{
+			"name": "Launch mapis test",
+			"type": "cppdbg",
+			"request": "launch",
+			"program": "/opt/AGL/bin/afb-daemon",
+			"args": [
+				"--name=afbd-mapis",
+				"--token=1",
+				"--workdir=.",
+				"--ldpaths=lib",
+				"--roothttp=.",
+				"-vvv",
+				"--tracereq=common"
+			],
+			"stopAtEntry": false,
+			"cwd": "${workspaceRoot}/build/package",
+			"environment": [],
+			"externalConsole": true,
+			"MIMode": "gdb",
+			"setupCommands": [
+				{
+					"description": "Enable pretty-printing for gdb",
+					"text": "-enable-pretty-printing",
+					"ignoreFailures": true
+				}
+			]
+		},
+		{
 			"name": "Launch Low-CAN test",
 			"type": "cppdbg",
 			"request": "launch",
@@ -13,9 +40,9 @@
 				"--name=afbd-test",
 				"--token=1",
 				"--workdir=.",
-				"--ldpaths=lib",
 				"--roothttp=.",
 				"--binding=${env:HOME}/opt/low-can-service/lib/afb-low-can.so",
+				"--binding=lib/test-binding.so",
 				"-vvv",
 				"--tracereq=common"
 			],

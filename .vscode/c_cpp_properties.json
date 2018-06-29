@@ -9,13 +9,14 @@
                 "limitSymbolsToIncludedHeaders": true
             },
             "includePath": [
-				"/usr/include",
+                "/usr/include",
                 "${workspaceFolder}",
-				"${workspaceFolder}",
+                "${workspaceFolder}",
                 "${workspaceFolder}/afb-helpers",
                 "${workspaceFolder}/src",
                 "${workspaceFolder}/app-controller-submodule/ctl-lib",
-				"/opt/AGL/include"
+                "/opt/AGL/include",
+                "${workspaceFolder}/src"
             ],
             "defines": [],
             "compilerPath": "/usr/bin/clang",
