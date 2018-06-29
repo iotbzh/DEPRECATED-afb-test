@@ -22,7 +22,7 @@
 #include <time.h>
 
 #include "test-binding.h"
-#include "fapis.h"
+#include "mapis.h"
 // default api to print log when apihandle not avaliable
 afb_dynapi *AFB_default;
 
@@ -31,7 +31,7 @@ static CtlSectionT ctrlSections[] = {
 	{.key = "resources", .loadCB = PluginConfig},
 	{.key = "onload", .loadCB = OnloadConfig},
 	{.key = "events", .loadCB = EventConfig},
-	{.key = "fapis", .loadCB = FapisConfig},
+	{.key = "mapis", .loadCB = mapisConfig},
 	{.key = NULL}
 };
 
@@ -114,7 +114,7 @@ int afbBindingVdyn(afb_dynapi *apiHandle) {
 	if (!dirList)
 		dirList = CONTROL_CONFIG_PATH;
 
-	configPath = CtlConfigSearch(apiHandle, dirList, "");
+	configPath = CtlConfigSearch(apiHandle, dirList, "aft");
 	if (!configPath) {
 		AFB_ApiError(apiHandle, "CtlPreInit: No %s* config found in %s ", GetBinderName(), dirList);
 		return ERROR;

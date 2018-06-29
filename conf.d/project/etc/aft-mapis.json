@@ -16,13 +16,13 @@
         "action": "lua://AFT#_launch_test",
         "args": {
             "trace": "low-can",
-            "files": "fapi.lua"
+            "files": "mapi_tests.lua"
         }
     },
-    "fapis": [{
+    "mapis": [{
         "uid": "low-can",
         "info": "Faked low-can API",
-        "libs": "low-can_fapi.lua",
+        "libs": "mapi_low-can.lua",
         "verbs": [
             {
                 "uid": "subscribe",
