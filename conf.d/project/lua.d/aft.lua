@@ -364,8 +364,15 @@ function _launch_test(context, args)
 		dofile('var/'..args.files)
 	end
 
+	AFB:success(_AFT.context, { info = "Launching tests"})
 	lu.LuaUnit:runSuiteByInstances(_AFT.tests_list)
 
-	AFB:success(context, {"Tests launched"})
+	local success ="Success : "..tostring(lu.LuaUnit.result.passedCount)
+	local failures="Failures : "..tostring(lu.LuaUnit.result.testCount-lu.LuaUnit.result.passedCount)
+
+	local evtHandle = AFB:evtmake(_AFT.context, 'results')
+	AFB:subscribe(_AFT.context,evtHandle)
+	AFB:evtpush(_AFT.context,evtHandle,{info = success.." "..failures})
+
 	if _AFT.exit[1] == 1 then os.exit(_AFT.exit[2]) end
 end
