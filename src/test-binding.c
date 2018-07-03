@@ -41,8 +41,6 @@ static void ctrlapi_ping(AFB_ReqT request) {
 	count++;
 	AFB_ReqNotice(request, "Controller:ping count=%d", count);
 	AFB_ReqSuccess(request, json_object_new_int(count), NULL);
-
-	return;
 }
 
 static void ctrlapi_exit(AFB_ReqT request) {
@@ -50,8 +48,6 @@ static void ctrlapi_exit(AFB_ReqT request) {
 	AFB_ReqNotice(request, "Exiting...");
 	AFB_ReqSuccess(request, NULL, NULL);
 	exit(0);
-
-	return;
 }
 
 static AFB_ApiVerbs CtrlApiVerbs[] = {

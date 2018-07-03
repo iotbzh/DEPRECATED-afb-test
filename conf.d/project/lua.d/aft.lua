@@ -30,6 +30,7 @@ print = function(...)
 end
 
 _AFT = {
+	exit = {0, code},
 	context = _ctx,
 	tests_list = {},
 	event_history = false,
@@ -48,6 +49,11 @@ function _AFT.setOutputFile(filePath)
 	local file = assert(io.open(filePath, "w+"))
 	io.output(file)
 end
+
+function _AFT.exitAtEnd(code)
+	_AFT.exit = {1, code}
+end
+
 --[[
   Events listener and assertion functions to test correctness of received
   event data.
@@ -368,4 +374,7 @@ function _launch_test(context, args)
 	end
 
 	lu.LuaUnit:runSuiteByInstances(_AFT.tests_list)
+
+	AFB:success(context, {"Tests launched"})
+	if _AFT.exit[1] == 1 then os.exit(_AFT.exit[2]) end
 end
