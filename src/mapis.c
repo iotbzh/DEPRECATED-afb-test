@@ -24,9 +24,10 @@ struct mapisHandleT {
 	CtlSectionT *section;
 	json_object *mapiJ;
 	json_object *verbsJ;
+	json_object *eventsJ;
 };
 
-static int LoadOnemapi(void *data, AFB_ApiT apiHandle)
+static int LoadOneMapi(void *data, AFB_ApiT apiHandle)
 {
 	struct mapisHandleT *mapisHandle = (struct mapisHandleT*)data;
 
@@ -46,7 +47,7 @@ static int LoadOnemapi(void *data, AFB_ApiT apiHandle)
 	return 0;
 }
 
-static void OnemapiConfig(void *data, json_object *mapiJ) {
+static void OneMapiConfig(void *data, json_object *mapiJ) {
 	const char *uid = NULL, *info = NULL;
 
 	struct mapisHandleT *mapisHandle = (struct mapisHandleT*)data;
@@ -58,30 +59,33 @@ static void OnemapiConfig(void *data, json_object *mapiJ) {
 					"spath", NULL,
 					"libs", NULL,
 					"lua", NULL,
-					"verbs", &mapisHandle->verbsJ)) {
+					"verbs", &mapisHandle->verbsJ,
+					"eventsJ", &mapisHandle->eventsJ)) {
 		AFB_ApiError(mapisHandle->mainApiHandle, "Wrong mapis specification, missing uid|[info]|[spath]|libs|[lua]|verbs");
 		return;
 		}
 
 		json_object_get(mapisHandle->verbsJ);
+		json_object_get(mapisHandle->eventsJ);
 		json_object_object_del(mapiJ, "verbs");
+		json_object_object_del(mapiJ, "events");
 		mapisHandle->mapiJ = mapiJ;
 
-		if (afb_dynapi_new_api(mapisHandle->mainApiHandle, uid, info, 1, LoadOnemapi, (void*)mapisHandle)) {
+		if (afb_dynapi_new_api(mapisHandle->mainApiHandle, uid, info, 1, LoadOneMapi, (void*)mapisHandle)) {
 			AFB_ApiError(mapisHandle->mainApiHandle, "Error creating new api: %s", uid);
 			return;
 		}
 	}
 }
 
-int mapisConfig(AFB_ApiT apiHandle, CtlSectionT *section, json_object *mapisJ) {
+int MapiConfig(AFB_ApiT apiHandle, CtlSectionT *section, json_object *mapisJ) {
 	struct mapisHandleT mapisHandle = {
 		.mainApiHandle = apiHandle,
 		.section = section,
 		.mapiJ = NULL,
 		.verbsJ = NULL
 	};
-	wrap_json_optarray_for_all(mapisJ, OnemapiConfig, (void*)&mapisHandle);
+	wrap_json_optarray_for_all(mapisJ, OneMapiConfig, (void*)&mapisHandle);
 
 	return 0;
 }

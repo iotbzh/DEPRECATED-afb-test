@@ -20,4 +20,4 @@
 #include <wrap-json.h>
 #include <filescan-utils.h>
 
-int mapisConfig(AFB_ApiT apiHandle, CtlSectionT *section, json_object *mapisJ);
+int MapiConfig(AFB_ApiT apiHandle, CtlSectionT *section, json_object *mapisJ);

@@ -31,7 +31,7 @@ static CtlSectionT ctrlSections[] = {
 	{.key = "resources", .loadCB = PluginConfig},
 	{.key = "testVerb", .loadCB = ControlConfig},
 	{.key = "events", .loadCB = EventConfig},
-	{.key = "mapis", .loadCB = mapisConfig},
+	{.key = "mapis", .loadCB = MapiConfig},
 	{.key = NULL}
 };
 
