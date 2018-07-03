@@ -50,6 +50,15 @@ static void ctrlapi_exit(AFB_ReqT request) {
 	exit(0);
 }
 
+static void ctrlapi_exit(AFB_ReqT request) {
+
+	AFB_ReqNotice(request, "Exiting...");
+	AFB_ReqSuccess(request, NULL, NULL);
+	exit(0);
+
+	return;
+}
+
 static AFB_ApiVerbs CtrlApiVerbs[] = {
 	/* VERB'S NAME         FUNCTION TO CALL         SHORT DESCRIPTION */
 	{.verb = "ping", .callback = ctrlapi_ping, .info = "ping test for API"},
