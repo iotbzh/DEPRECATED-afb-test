@@ -71,10 +71,6 @@ function _AFT.addEventToMonitor(eventName, callback)
 	_AFT.monitored_events[eventName] = { cb = callback, receivedCount = 0 }
 end
 
-function _AFT.addLogToMonitor(api, type, message, callback)
-	_AFT.monitored_events[message] = { api = api, type = type, cb = callback, receivedCount = 0 }
-end
-
 function _AFT.incrementCount(dict)
 	if dict.receivedCount then
 		dict.receivedCount = dict.receivedCount + 1
@@ -322,23 +318,18 @@ local luaunit_list_of_functions = {
 local _AFT_list_of_funcs = {
 	-- AF Binder generic assertions
 	{ 'addEventToMonitor', 'resetEventReceivedCount' },
-	{ 'addLogToMonitor', 'resetLogReceivedCount' },
 	{ 'assertVerb',      'assertVerbStatusSuccess' },
 	{ 'assertVerb',      'assertVerbResponseEquals' },
 	{ 'assertVerb',      'assertVerbCb' },
 	{ 'assertVerbError', 'assertVerbStatusError' },
 	{ 'assertVerbError', 'assertVerbResponseEqualsError' },
 	{ 'assertVerbError', 'assertVerbCbError' },
-	{ 'assertEvtReceived', 'assertLogReceived' },
-	{ 'assertEvtNotReceived', 'assertLogNotReceived' },
 	{ 'testVerb',      'testVerbStatusSuccess' },
 	{ 'testVerb',      'testVerbResponseEquals' },
 	{ 'testVerb',      'testVerbCb' },
 	{ 'testVerbError', 'testVerbStatusError' },
 	{ 'testVerbError', 'testVerbResponseEqualsError' },
 	{ 'testVerbError', 'testVerbCbError' },
-	{ 'testEvtReceived', 'testLogReceived' },
-	{ 'testEvtNotReceived', 'testLogNotReceived' },
 }
 
 -- Import all luaunit assertion function to _AFT object
@@ -364,7 +355,7 @@ function _launch_test(context, args)
 
 	_AFT.setOutputFile("var/test_results.log")
 	AFB:servsync(_AFT.context, "monitor", "set", { verbosity = "debug" })
-	AFB:servsync(_AFT.context, "monitor", "trace", { add = { api = args.trace, request = "vverbose", daemon = "vverbose", event = "push_after" }})
+	AFB:servsync(_AFT.context, "monitor", "trace", { add = { api = args.trace, request = "vverbose", event = "push_after" }})
 	if args.files and type(args.files) == 'table' then
 		for _,f in pairs(args.files) do
 			dofile('var/'..f)
