@@ -10,7 +10,7 @@
             "hello"
         ]
     },
-    "onload": {
+    "testVerb": {
         "uid": "launch_all_tests",
         "info": "Launch all the tests",
         "action": "lua://AFT#_launch_test",

@@ -29,7 +29,7 @@ afb_dynapi *AFB_default;
 // Config Section definition
 static CtlSectionT ctrlSections[] = {
 	{.key = "resources", .loadCB = PluginConfig},
-	{.key = "onload", .loadCB = OnloadConfig},
+	{.key = "testVerb", .loadCB = ControlConfig},
 	{.key = "events", .loadCB = EventConfig},
 	{.key = "mapis", .loadCB = mapisConfig},
 	{.key = NULL}
@@ -45,9 +45,19 @@ static void ctrlapi_ping(AFB_ReqT request) {
 	return;
 }
 
+static void ctrlapi_exit(AFB_ReqT request) {
+
+	AFB_ReqNotice(request, "Exiting...");
+	AFB_ReqSuccess(request, NULL, NULL);
+	exit(0);
+
+	return;
+}
+
 static AFB_ApiVerbs CtrlApiVerbs[] = {
 	/* VERB'S NAME         FUNCTION TO CALL         SHORT DESCRIPTION */
 	{.verb = "ping", .callback = ctrlapi_ping, .info = "ping test for API"},
+	{.verb = "exit", .callback = ctrlapi_exit, .info = "Exit test"},
 	{.verb = NULL} /* marker for end of the array */
 };
 
