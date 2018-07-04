@@ -330,7 +330,7 @@ callback let you add assertions and enrich the test.
 
     Should return success on failure.
 
-* **_AFT.testEvtReceived(testName, eventName)**
+* **_AFT.testEvtReceived(testName, eventName, timeout)**
 
     Prior to be able to check that an event has been received, you have to
     register the event with the test framework using **_AFT.addEventToMonitor**
@@ -339,34 +339,16 @@ callback let you add assertions and enrich the test.
     Check if an event has been correctly received. An event name use the
     application framework naming scheme: **api/event_name**.
 
-* **_AFT.testLogReceived(testName, logMsg)**
 
-    Prior to be able to check that an event has been received, you have to
-    register the event with the test framework using **_AFT.addLogToMonitor**
-    function.
 
-    Check if a log message sent by the daemon has been correctly received. A log
-    message is caracterized by its *api* and the message level *error*,
-    *warning*, *notice*, *info* or *debug*.
-
-* **_AFT.testEvtNotReceived(testName, eventName)**
+* **_AFT.testEvtNotReceived(testName, eventName, timeout)**
 
     Prior to be able to check that an event has been received, you have to
     register the event with the test framework using **_AFT.addEventToMonitor**
     function.
 
-    Check if an event has been correctly received. An event name use the
+    Check if an event has been correctly received in time. An event name use the
     application framework naming scheme: **api/event_name**.
-
-* **_AFT.testLogNotReceived(testName, logMsg)**
-
-    Prior to be able to check that an event has been received, you have to
-    register the event with the test framework using **_AFT.addLogToMonitor**
-    function.
-
-    Check if a log message sent by the daemon has been correctly received. A log
-    message is caracterized by its *api* and the message level *error*,
-    *warning*, *notice*, *info* or *debug*.
 
 #### Binding Assert functions
 
@@ -399,7 +381,7 @@ callback let you add assertions and enrich the test.
 
     Should return success on failure.
 
-* **_AFT.assertEvtReceived(eventName)**
+* **_AFT.assertEvtReceived(eventName, timeout)**
 
     Prior to be able to check that an event has been received, you have to
     register the event with the test framework using **_AFT.addEventToMonitor**
@@ -408,16 +390,7 @@ callback let you add assertions and enrich the test.
     Check if an event has been correctly received. An event name use the
     application framework naming scheme: **api/event_name**.
 
-* **_AFT.assertLogReceived(testName, logMsg)**
-
-    Prior to be able to check that an event has been received, you have to
-    register the event with the test framework using **_AFT.addLogToMonitor**
-    function.
-
-    Check if a log message sent by the daemon has been correctly received. A log
-    message is caracterized by its *api* and the message level *error*,
-    *warning*, *notice*, *info* or *debug*.
-* **_AFT.assertEvtNotReceived(eventName)**
+* **_AFT.assertEvtNotReceived(eventName, timeout)**
 
     Prior to be able to check that an event has been received, you have to
     register the event with the test framework using **_AFT.addEventToMonitor**
@@ -425,16 +398,6 @@ callback let you add assertions and enrich the test.
 
     Check if an event has been correctly received. An event name use the
     application framework naming scheme: **api/event_name**.
-
-* **_AFT.assertLogNotReceived(testName, logMsg)**
-
-    Prior to be able to check that an event has been received, you have to
-    register the event with the test framework using **_AFT.addLogToMonitor**
-    function.
-
-    Check if a log message sent by the daemon has been correctly received. A log
-    message is caracterized by its *api* and the message level *error*,
-    *warning*, *notice*, *info* or *debug*.
 
 #### Test Framework functions
 
