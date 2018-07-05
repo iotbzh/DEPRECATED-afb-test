@@ -20,3 +20,11 @@
 # Include any directory not starting with _
 # -----------------------------------------------------
 PROJECT_SUBDIRS_ADD(${PROJECT_SRC_DIR_PATTERN})
+
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/aft.pc.in ${CMAKE_CURRENT_BINARY_DIR}/aft.pc @ONLY)
+
+INSTALL(FILES
+	${CMAKE_CURRENT_BINARY_DIR}/aft.pc
+	DESTINATION
+	${CMAKE_INSTALL_LIBDIR}/pkgconfig
+	)
