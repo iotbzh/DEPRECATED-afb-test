@@ -16,17 +16,16 @@
 # limitations under the License.
 ###########################################################################
 
-
 ##################################################
-# Soft Mixer Lua Scripts
+# Control Policy Config file
 ##################################################
-PROJECT_TARGET_ADD(test-lua)
+PROJECT_TARGET_ADD(aftest-config)
 
-	file(GLOB LUA_FILES "*.lua")
+	file(GLOB CONF_FILES "*.json")
 
-	add_input_files("${LUA_FILES}")
+	add_input_files("${CONF_FILES}")
 
 	SET_TARGET_PROPERTIES(${TARGET_NAME} PROPERTIES
-	LABELS "DATA"
+	LABELS "BINDING-CONFIG"
 	OUTPUT_NAME ${TARGET_NAME}
 	)

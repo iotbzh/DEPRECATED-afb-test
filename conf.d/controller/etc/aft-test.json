@@ -4,7 +4,7 @@
     "metadata": {
         "uid": "Test",
         "version": "1.0",
-        "api": "test",
+        "api": "afTest",
         "info": "Binding made to tests other bindings",
         "require": [
             "hello"

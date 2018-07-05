@@ -76,7 +76,13 @@ set (PKG_REQUIRED_LIST
 # Prefix path where will be installed the files
 # Default: /usr/local (need root permission to write in)
 # ------------------------------------------------------
-set(CMAKE_INSTALL_PREFIX $ENV{HOME}/opt)
+execute_process(
+	COMMAND pkg-config --variable binding_install_dir afb-daemon
+		OUTPUT_VARIABLE afb_binding_install_dir
+		OUTPUT_STRIP_TRAILING_WHITESPACE
+)
+
+set(CMAKE_INSTALL_PREFIX ${afb_binding_install_dir})
 
 # Customize link option
 # -----------------------------

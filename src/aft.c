@@ -21,7 +21,7 @@
 #include <string.h>
 #include <time.h>
 
-#include "test-binding.h"
+#include "aft.h"
 #include "mapis.h"
 // default api to print log when apihandle not avaliable
 afb_dynapi *AFB_default;

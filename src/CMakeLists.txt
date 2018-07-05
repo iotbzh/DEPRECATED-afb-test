@@ -18,7 +18,7 @@
 
 
 # Add target to project dependency list
-PROJECT_TARGET_ADD(test-binding)
+PROJECT_TARGET_ADD(aft)
 
     # Define project Targets
     ADD_LIBRARY(${TARGET_NAME} MODULE ${TARGET_NAME}.c mapis.c)
@@ -32,7 +32,7 @@ PROJECT_TARGET_ADD(test-binding)
 
     TARGET_LINK_LIBRARIES(${TARGET_NAME}
 	    afb-helpers
-            ctl-utilities
+        ctl-utilities
 	    ${link_libraries}
     )
 

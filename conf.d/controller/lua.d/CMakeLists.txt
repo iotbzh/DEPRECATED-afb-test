@@ -16,16 +16,17 @@
 # limitations under the License.
 ###########################################################################
 
-##################################################
-# Control Policy Config file
-##################################################
-PROJECT_TARGET_ADD(afb-test-config)
 
-	file(GLOB CONF_FILES "*.json")
+##################################################
+# Soft Mixer Lua Scripts
+##################################################
+PROJECT_TARGET_ADD(afTest-lua)
 
-	add_input_files("${CONF_FILES}")
+	file(GLOB LUA_FILES "*.lua")
+
+	add_input_files("${LUA_FILES}")
 
 	SET_TARGET_PROPERTIES(${TARGET_NAME} PROPERTIES
-	LABELS "BINDING-CONFIG"
+	LABELS "DATA"
 	OUTPUT_NAME ${TARGET_NAME}
 	)
