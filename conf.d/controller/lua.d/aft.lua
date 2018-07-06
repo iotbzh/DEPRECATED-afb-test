@@ -35,6 +35,10 @@ _AFT = {
 	tests_list = {},
 	event_history = false,
 	monitored_events = {},
+	beforeEach = nil,
+	afterEach = nil,
+	beforeAll = nil,
+	afterAll = nil,
 }
 
 function _AFT.enableEventHistory()
@@ -167,15 +171,19 @@ end
 
 function _AFT.testEvtNotReceived(testName, eventName, timeout)
 	table.insert(_AFT.tests_list, {testName, function()
+		if _AFT.beforeEach then _AFT.beforeEach() end
 		if timeout then sleep(timeout) end
 		_AFT.assertEvtNotReceived(eventName)
+		if _AFT.afterEach then _AFT.afterEach() end
 	end})
 end
 
 function _AFT.testEvtReceived(testName, eventName, timeout)
 	table.insert(_AFT.tests_list, {testName, function()
+		if _AFT.beforeEach then _AFT.beforeEach() end
 		if timeout then sleep(timeout) end
 		_AFT.assertEvtReceived(eventName)
+		if _AFT.afterEach then _AFT.afterEach() end
 	end})
 end
 
@@ -230,20 +238,58 @@ end
 
 function _AFT.testVerb(testName, api, verb, args, cb)
 	table.insert(_AFT.tests_list, {testName, function()
+		if _AFT.beforeEach then _AFT.beforeEach() end
 		_AFT.assertVerb(api, verb, args, cb)
+		if _AFT.afterEach then _AFT.afterEach() end
 	end})
 end
 
 function _AFT.testVerbError(testName, api, verb, args, cb)
 	table.insert(_AFT.tests_list, {testName, function()
+		if _AFT.beforeEach then _AFT.beforeEach() end
 		_AFT.assertVerbError(api, verb, args, cb)
+		if _AFT.afterEach then _AFT.afterEach() end
 	end})
 end
 
 function _AFT.describe(testName, testFunction)
 	table.insert(_AFT.tests_list, {testName, function()
+		if _AFT.beforeEach then _AFT.beforeEach() end
 		testFunction()
+		if _AFT.afterEach then _AFT.afterEach() end
 	end})
+end
+
+function _AFT.setbeforeEach(beforeEachTestFunction)
+	if type(beforeEachTestFunction) == "function" then
+		_AFT.beforeEach = beforeEachTestFunction
+	else
+		print("Wrong beforeEach function defined. It isn't detected as a function type")
+	end
+end
+
+function _AFT.setAfterEach(afterEachTestFunction)
+	if type(afterEachTestFunction) == "function" then
+		_AFT.afterEach = afterEachTestFunction
+	else
+		print("Wrong beforeEach function defined. It isn't detected as a function type")
+	end
+end
+
+function _AFT.setBefore(beforeAllTestsFunctions)
+	if type(beforeAllTestsFunctions) == "function" then
+		_AFT.beforeAll = beforeAllTestsFunctions
+	else
+		print("Wrong beforeAll function defined. It isn't detected as a function type")
+	end
+end
+
+function _AFT.setAfter(afterAllTestsFunctions)
+	if type(afterAllTestsFunctions) == "function" then
+		_AFT.afterAll = afterAllTestsFunctions
+	else
+		print("Wrong afterAll function defined. It isn't detected as a function type")
+	end
 end
 
 --[[
@@ -365,7 +411,9 @@ function _launch_test(context, args)
 	end
 
 	AFB:success(_AFT.context, { info = "Launching tests"})
+	if _AFT.beforeAll then _AFT.beforeAll() end
 	lu.LuaUnit:runSuiteByInstances(_AFT.tests_list)
+	if _AFT.afterAll then _AFT.afterAll() end
 
 	local success ="Success : "..tostring(lu.LuaUnit.result.passedCount)
 	local failures="Failures : "..tostring(lu.LuaUnit.result.testCount-lu.LuaUnit.result.passedCount)
