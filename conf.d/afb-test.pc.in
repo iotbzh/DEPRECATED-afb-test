@@ -17,7 +17,7 @@
 ## limitations under the License.
 ##
 
-libdir=@CMAKE_INSTALL_FULL_LIBDIR@
+libdir=@CMAKE_INSTALL_PREFIX@
 
 Name: @PROJECT_PRETTY_NAME@
 Description: @PROJECT_DESCRIPTION@

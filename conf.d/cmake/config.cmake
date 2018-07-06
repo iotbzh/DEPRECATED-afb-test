@@ -18,11 +18,11 @@
 
 # Project Info
 # ------------------
-set(PROJECT_NAME test)
+set(PROJECT_NAME afb-test)
 set(PROJECT_VERSION "5.0")
 set(PROJECT_PRETTY_NAME "Binding to test other bindings")
 set(PROJECT_DESCRIPTION "Binding used to test other binding")
-set(PROJECT_URL "https://github.com/iotbzh/afb-afb-test")
+set(PROJECT_URL "https://github.com/iotbzh/afb-test")
 set(PROJECT_ICON "icon.png")
 set(PROJECT_AUTHOR "Forlot Romain")
 set(PROJECT_AUTHOR_MAIL "romain.forlot@iot.bzh")

@@ -21,10 +21,10 @@
 # -----------------------------------------------------
 PROJECT_SUBDIRS_ADD(${PROJECT_SRC_DIR_PATTERN})
 
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/aft.pc.in ${CMAKE_CURRENT_BINARY_DIR}/aft.pc @ONLY)
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/afb-test.pc.in ${CMAKE_CURRENT_BINARY_DIR}/afb-test.pc @ONLY)
 
 INSTALL(FILES
-	${CMAKE_CURRENT_BINARY_DIR}/aft.pc
+	${CMAKE_CURRENT_BINARY_DIR}/afb-test.pc
 	DESTINATION
 	${CMAKE_INSTALL_LIBDIR}/pkgconfig
 	)
