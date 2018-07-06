@@ -45,7 +45,7 @@ set(PROJECT_APP_TEMPLATES_DIR "conf.d/app-templates")
 
 # Compilation Mode (DEBUG, RELEASE)
 # ----------------------------------
-set(CMAKE_BUILD_TYPE "DEBUG")
+set(CMAKE_BUILD_TYPE "DEBUG" CACHE STRING "Default build type chosen. (Overwritten by cli if given)")
 
 # Kernel selection if needed. You can choose between a
 # mandatory version to impose a minimal version.
@@ -76,13 +76,7 @@ set (PKG_REQUIRED_LIST
 # Prefix path where will be installed the files
 # Default: /usr/local (need root permission to write in)
 # ------------------------------------------------------
-execute_process(
-	COMMAND pkg-config --variable binding_install_dir afb-daemon
-		OUTPUT_VARIABLE afb_binding_install_dir
-		OUTPUT_STRIP_TRAILING_WHITESPACE
-)
-
-set(CMAKE_INSTALL_PREFIX ${afb_binding_install_dir})
+set(CMAKE_INSTALL_PREFIX /opt/AGL)
 
 # Customize link option
 # -----------------------------
