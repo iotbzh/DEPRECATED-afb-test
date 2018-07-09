@@ -252,22 +252,32 @@ function _AFT.testVerbError(testName, api, verb, args, cb)
 	end})
 end
 
-function _AFT.describe(testName, testFunction)
+function _AFT.describe(testName, testFunction, setUp, tearDown)
 	sanitizedTestName = "test"..tostring(testName)
 	if _AFT.beforeEach then local b = _AFT.beforeEach() end
 	if _AFT.afterEach then local a = _AFT.afterEach() end
 	local aTest = {}
 
 	function aTest:sanitizedTestName() testFunction() end
-	function aTest:setUp() b() end
-	function aTest:tearDown() a() end
+	function aTest:setUp()
+		if type(setUp) == 'function' then setUp() end
+		b()
+	end
+	function aTest:tearDown()
+		a()
+		if type(tearDown) == 'function' then tearDown() end
+	end
 
 	table.insert(_AFT.tests_list, {testName, function()
-		testFunction()
+		if type(testFunction) == 'function' then
+			testFunction()
+		else
+			print('# ERROR: Test '.. testName .. ' is note defined as a function.')
+		end
 	end})
 end
 
-function _AFT.setbeforeEach(beforeEachTestFunction)
+function _AFT.setBeforeEach(beforeEachTestFunction)
 	if type(beforeEachTestFunction) == "function" then
 		_AFT.beforeEach = beforeEachTestFunction
 	else
@@ -283,7 +293,7 @@ function _AFT.setAfterEach(afterEachTestFunction)
 	end
 end
 
-function _AFT.setBefore(beforeAllTestsFunctions)
+function _AFT.setBeforeAll(beforeAllTestsFunctions)
 	if type(beforeAllTestsFunctions) == "function" then
 		_AFT.beforeAll = beforeAllTestsFunctions
 	else
@@ -291,7 +301,7 @@ function _AFT.setBefore(beforeAllTestsFunctions)
 	end
 end
 
-function _AFT.setAfter(afterAllTestsFunctions)
+function _AFT.setAfterAll(afterAllTestsFunctions)
 	if type(afterAllTestsFunctions) == "function" then
 		_AFT.afterAll = afterAllTestsFunctions
 	else
@@ -440,7 +450,7 @@ function _launch_test(context, args)
 	-- Keep the context unset function to be executed after all no matter if
 	-- tests have been executed or not.
 	if _AFT.afterAll then
-		if _AFT.afterAll() != 0 then
+		if _AFT.afterAll() ~= 0 then
 			print('Unsetting the tests context failed.')
 		end
 	end
