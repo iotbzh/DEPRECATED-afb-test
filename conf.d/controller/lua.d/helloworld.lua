@@ -32,7 +32,6 @@ end
 
 _AFT.addEventToMonitor("hello/anEvent")
 _AFT.addEventToMonitor("hello/anotherEvent", _callbackEvent)
-_AFT.addLogToMonitor("hello", "warning", "verbose called for My Warning message!")
 
 _AFT.testVerbStatusSuccess('testPingSuccess','hello', 'ping', {})
 _AFT.testVerbResponseEquals('testPingSuccessAndResponse','hello', 'ping', {}, "Some String")
@@ -57,8 +56,6 @@ _AFT.testVerbStatusSuccess('testGenerateWarning', 'hello', 'verbose', {level = 4
 _AFT.testEvtReceived("testanEventReceived", "hello/anEvent")
 _AFT.testEvtReceived("testanotherEventReceived", "hello/anotherEvent")
 
-_AFT.testLogReceived("LogReceived", "verbose called for My Warning message!")
-
-_AFT.testCustom("mytest", function()
+_AFT.describe("mytest", function()
   _AFT.assertEquals(false, false)
 end)

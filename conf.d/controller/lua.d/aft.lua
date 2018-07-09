@@ -169,7 +169,7 @@ function _AFT.assertEvtReceived(eventName)
 	end
 end
 
-function _AFT.testEvtNotReceived(testName, eventName, timeout)
+function _AFT.testEvtNotReceived(testName, eventName, timeout, setUp, tearDown)
 	table.insert(_AFT.tests_list, {testName, function()
 		if _AFT.beforeEach then _AFT.beforeEach() end
 		if timeout then sleep(timeout) end
@@ -178,7 +178,7 @@ function _AFT.testEvtNotReceived(testName, eventName, timeout)
 	end})
 end
 
-function _AFT.testEvtReceived(testName, eventName, timeout)
+function _AFT.testEvtReceived(testName, eventName, timeout, setUp, tearDown)
 	table.insert(_AFT.tests_list, {testName, function()
 		if _AFT.beforeEach then _AFT.beforeEach() end
 		if timeout then sleep(timeout) end
@@ -236,45 +236,70 @@ function _AFT.assertVerbError(api, verb, args, cb)
 	end
 end
 
-function _AFT.testVerb(testName, api, verb, args, cb)
-	table.insert(_AFT.tests_list, {testName, function()
-		if _AFT.beforeEach then _AFT.beforeEach() end
+function _AFT.testVerb(testName, api, verb, args, cb, setUp, tearDown)
+	_AFT.describe(testName, function()
 		_AFT.assertVerb(api, verb, args, cb)
-		if _AFT.afterEach then _AFT.afterEach() end
-	end})
+	end, setUp, tearDown)
 end
 
-function _AFT.testVerbError(testName, api, verb, args, cb)
-	table.insert(_AFT.tests_list, {testName, function()
-		if _AFT.beforeEach then _AFT.beforeEach() end
-		_AFT.assertVerbError(api, verb, args, cb)
-		if _AFT.afterEach then _AFT.afterEach() end
-	end})
+function _AFT.testVerbError(testName, api, verb, args, cb, setUp, tearDown)
+	_AFT.describe(testName, function()
+				_AFT.assertVerbError(api, verb, args, cb)
+			end, setUp, tearDown)
+
 end
 
 function _AFT.describe(testName, testFunction, setUp, tearDown)
-	local sanitizedTestName = "test"..tostring(testName)
 	if _AFT.beforeEach then local b = _AFT.beforeEach() end
 	if _AFT.afterEach then local a = _AFT.afterEach() end
 	local aTest = {}
 
-	function aTest:sanitizedTestName() testFunction() end
+	if type(testFunction) == 'function' then
+		function aTest:testFunction() testFunction() end
+	else
+		print('ERROR: #2 argument isn\'t of type function. Aborting...')
+		os.exit(1)
+	end
 	function aTest:setUp()
 		if type(setUp) == 'function' then setUp() end
-		b()
+		if b then b() end
 	end
 	function aTest:tearDown()
-		a()
+		if a then a() end
 		if type(tearDown) == 'function' then tearDown() end
 	end
 
-	table.insert(_AFT.tests_list, {testName, function()
-		if type(testFunction) == 'function' then
-			testFunction()
-		else
-			print('# ERROR: Test '.. testName .. ' is note defined as a function.')
+	table.insert(_AFT.tests_list, {testName, aTest})
+end
+
+function _AFT.setBefore(testName, beforeTestFunction)
+	if type(beforeTestFunction) == "function" then
+		for _,item in pairs(_AFT.test_list) do
+			if item[0] == testName then
+				item[1].setUp = function()
+					beforeTestFunction()
+					item[1].setUp()
+				end
+			end
 		end
-	end})
+	else
+		print("Wrong 'before' function defined. It isn't detected as a function type")
+	end
+end
+
+function _AFT.setAfter(testName, afterTestFunction)
+	if type(afterTestFunction) == "function" then
+		for _,item in pairs(_AFT.test_list) do
+			if item[0] == testName then
+				item[1].setUp = function()
+					item[1].tearDown()
+					afterTestFunction()
+				end
+			end
+		end
+	else
+		print("Wrong 'after' function defined. It isn't detected as a function type")
+	end
 end
 
 function _AFT.setBeforeEach(beforeEachTestFunction)
@@ -289,7 +314,7 @@ function _AFT.setAfterEach(afterEachTestFunction)
 	if type(afterEachTestFunction) == "function" then
 		_AFT.afterEach = afterEachTestFunction
 	else
-		print("Wrong beforeEach function defined. It isn't detected as a function type")
+		print("Wrong afterEach function defined. It isn't detected as a function type")
 	end
 end
 
@@ -413,6 +438,18 @@ for _, v in pairs( _AFT_list_of_funcs ) do
 	_AFT[alias] = _AFT[funcname]
 end
 
+local function call_tests()
+	AFB:success(_AFT.context, { info = "Launching tests"})
+	lu.LuaUnit:runSuiteByInstances(_AFT.tests_list)
+
+	local success ="Success : "..tostring(lu.LuaUnit.result.passedCount)
+	local failures="Failures : "..tostring(lu.LuaUnit.result.testCount-lu.LuaUnit.result.passedCount)
+
+	local evtHandle = AFB:evtmake(_AFT.context, 'results')
+	AFB:subscribe(_AFT.context,evtHandle)
+	AFB:evtpush(_AFT.context,evtHandle,{info = success.." "..failures})
+end
+
 function _launch_test(context, args)
 	_AFT.context = context
 
@@ -433,18 +470,12 @@ function _launch_test(context, args)
 	-- function success returning '0' else we abort the whole test procedure
 	if _AFT.beforeAll then
 		if _AFT.beforeAll() == 0 then
-			AFB:success(_AFT.context, { info = "Launching tests"})
-			lu.LuaUnit:runSuiteByInstances(_AFT.tests_list)
-
-			local success ="Success : "..tostring(lu.LuaUnit.result.passedCount)
-			local failures="Failures : "..tostring(lu.LuaUnit.result.testCount-lu.LuaUnit.result.passedCount)
-
-			local evtHandle = AFB:evtmake(_AFT.context, 'results')
-			AFB:subscribe(_AFT.context,evtHandle)
-			AFB:evtpush(_AFT.context,evtHandle,{info = success.." "..failures})
+			call_tests()
 		else
 			AFB:fail(_AFT.context, { info = "Can't set the context to execute the tests correctly. Look at the log and retry."})
 		end
+	else
+		call_tests()
 	end
 
 	-- Keep the context unset function to be executed after all no matter if
