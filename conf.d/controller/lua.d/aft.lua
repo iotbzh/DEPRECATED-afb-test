@@ -253,7 +253,7 @@ function _AFT.testVerbError(testName, api, verb, args, cb)
 end
 
 function _AFT.describe(testName, testFunction, setUp, tearDown)
-	sanitizedTestName = "test"..tostring(testName)
+	local sanitizedTestName = "test"..tostring(testName)
 	if _AFT.beforeEach then local b = _AFT.beforeEach() end
 	if _AFT.afterEach then local a = _AFT.afterEach() end
 	local aTest = {}
