@@ -17,7 +17,9 @@
 ## limitations under the License.
 ##
 
-libdir=@CMAKE_INSTALL_PREFIX@
+etcdir=@CMAKE_INSTALL_PREFIX@/@PROJECT_NAME@/etc
+libdir=@CMAKE_INSTALL_PREFIX@/@PROJECT_NAME@/lib
+vardir=@CMAKE_INSTALL_PREFIX@/@PROJECT_NAME@/var
 
 Name: @PROJECT_PRETTY_NAME@
 Description: @PROJECT_DESCRIPTION@
