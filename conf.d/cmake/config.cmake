@@ -76,7 +76,7 @@ set (PKG_REQUIRED_LIST
 # Prefix path where will be installed the files
 # Default: /usr/local (need root permission to write in)
 # ------------------------------------------------------
-set(CMAKE_INSTALL_PREFIX /opt/AGL)
+set(CMAKE_INSTALL_PREFIX /opt/AGL CACHE PATH "INSTALL PREFIX PATH")
 
 # Customize link option
 # -----------------------------
@@ -133,8 +133,8 @@ add_definitions(-DUSE_API_DYN=1 -DCONTROL_SUPPORT_LUA)
 
 # (BUG!!!) as PKG_CONFIG_PATH does not work [should be an env variable]
 # ---------------------------------------------------------------------
-set(CMAKE_PREFIX_PATH ${CMAKE_INSTALL_PREFIX}/lib64/pkgconfig ${CMAKE_INSTALL_PREFIX}/lib/pkgconfig)
-set(LD_LIBRARY_PATH ${CMAKE_INSTALL_PREFIX}/lib64 ${CMAKE_INSTALL_PREFIX}/lib)
+set(CMAKE_PREFIX_PATH ${CMAKE_INSTALL_PREFIX}/lib64/pkgconfig ${CMAKE_INSTALL_PREFIX}/lib/pkgconfig CACHE PATH "Prefix path")
+set(LD_LIBRARY_PATH ${CMAKE_INSTALL_PREFIX}/lib64 ${CMAKE_INSTALL_PREFIX}/lib CACHE STRING "List of directory where search for libraries")
 
 # Optional location for config.xml.in
 # -----------------------------------
