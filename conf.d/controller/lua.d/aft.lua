@@ -141,6 +141,23 @@ end
   Assert and test functions about the event part.
 ]]
 
+function _AFT.lockwait(eventName, timeout)
+    local count = 0
+	if _AFT.monitored_events[eventName].receivedCount then
+        if timeout then
+		    count = _AFT.monitored_events[eventName].receivedCount
+        end
+	end
+
+    while timeout > 0 do
+        timeout = AFB:lockwait(_AFT.context, timeout)
+        if _AFT.monitored_events[eventName].receivedCount == count + 1 then
+            return 1
+        end
+    end
+    return 0
+end
+
 function _AFT.assertEvtNotReceived(eventName)
 	local count = 0
 	if _AFT.monitored_events[eventName].receivedCount then
@@ -155,11 +172,8 @@ function _AFT.assertEvtNotReceived(eventName)
 	end
 end
 
-function _AFT.assertEvtReceived(eventName)
-	local count = 0
-	if _AFT.monitored_events[eventName].receivedCount then
-		count = _AFT.monitored_events[eventName].receivedCount
-	end
+function _AFT.assertEvtReceived(eventName, timeout)
+	local count = _AFT.lockwait(eventName, timeout)
 
 	_AFT.assertIsTrue(count > 0, "No event '".. eventName .."' received")
 
