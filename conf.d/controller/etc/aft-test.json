@@ -4,19 +4,19 @@
     "metadata": {
         "uid": "Test",
         "version": "1.0",
-        "api": "afTest",
+        "api": "test",
         "info": "Binding made to tests other bindings",
         "require": [
             "hello"
         ]
     },
-    "testVerb": {
+    "onload": {
         "uid": "launch_all_tests",
         "info": "Launch all the tests",
         "action": "lua://AFT#_launch_test",
         "args": {
             "trace": "hello",
-            "files": "helloworld.lua"
+            "files": ["aftTest.lua","helloworld.lua"]
         }
     }
 }
