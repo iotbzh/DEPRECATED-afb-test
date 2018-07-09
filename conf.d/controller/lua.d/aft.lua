@@ -141,11 +141,25 @@ end
   Assert and test functions about the event part.
 ]]
 
-function _AFT.assertEvtNotReceived(eventName)
-	local count = 0
+function _AFT.lockwait(eventName, timeout)
+    local count = 0
 	if _AFT.monitored_events[eventName].receivedCount then
-		count = _AFT.monitored_events[eventName].receivedCount
+        if timeout then
+		    count = _AFT.monitored_events[eventName].receivedCount
+        end
 	end
+
+    while timeout > 0 do
+        timeout = AFB:lockwait(_AFT.context, timeout)
+        if _AFT.monitored_events[eventName].receivedCount == count + 1 then
+            return 1
+        end
+    end
+    return 0
+end
+
+function _AFT.assertEvtNotReceived(eventName, timeout)
+	local count = _AFT.lockwait(eventName, timeout)
 
 	_AFT.assertIsTrue(count == 0, "Event '".. eventName .."' received but it shouldn't")
 
@@ -155,11 +169,8 @@ function _AFT.assertEvtNotReceived(eventName)
 	end
 end
 
-function _AFT.assertEvtReceived(eventName)
-	local count = 0
-	if _AFT.monitored_events[eventName].receivedCount then
-		count = _AFT.monitored_events[eventName].receivedCount
-	end
+function _AFT.assertEvtReceived(eventName, timeout)
+	local count = _AFT.lockwait(eventName, timeout)
 
 	_AFT.assertIsTrue(count > 0, "No event '".. eventName .."' received")
 
@@ -172,8 +183,7 @@ end
 function _AFT.testEvtNotReceived(testName, eventName, timeout, setUp, tearDown)
 	table.insert(_AFT.tests_list, {testName, function()
 		if _AFT.beforeEach then _AFT.beforeEach() end
-		if timeout then sleep(timeout) end
-		_AFT.assertEvtNotReceived(eventName)
+		_AFT.assertEvtNotReceived(eventName, timeout)
 		if _AFT.afterEach then _AFT.afterEach() end
 	end})
 end
@@ -181,8 +191,7 @@ end
 function _AFT.testEvtReceived(testName, eventName, timeout, setUp, tearDown)
 	table.insert(_AFT.tests_list, {testName, function()
 		if _AFT.beforeEach then _AFT.beforeEach() end
-		if timeout then sleep(timeout) end
-		_AFT.assertEvtReceived(eventName)
+		_AFT.assertEvtReceived(eventName, timeout)
 		if _AFT.afterEach then _AFT.afterEach() end
 	end})
 end
