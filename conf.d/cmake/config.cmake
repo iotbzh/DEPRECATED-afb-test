@@ -76,7 +76,7 @@ set (PKG_REQUIRED_LIST
 # Prefix path where will be installed the files
 # Default: /usr/local (need root permission to write in)
 # ------------------------------------------------------
-set(CMAKE_INSTALL_PREFIX /opt/AGL CACHE PATH "INSTALL PREFIX PATH")
+set(INSTALL_PREFIX /opt/AGL CACHE PATH "INSTALL PREFIX PATH")
 
 # Customize link option
 # -----------------------------
