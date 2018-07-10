@@ -107,7 +107,7 @@ static int CtrlLoadOneApi(void *cbdata, AFB_ApiT apiHandle) {
 	return err;
 }
 
-int afbBindingVdyn(afb_dynapi *apiHandle) {
+int afbBindingEntry(afb_dynapi *apiHandle) {
 	int status, err = 0;
 	const char *dirList = NULL, *configPath = NULL;
 	json_object *resourcesJ = NULL, *eventsJ = NULL;
