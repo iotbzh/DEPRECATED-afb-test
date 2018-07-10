@@ -151,6 +151,7 @@ function _AFT.lockwait(eventName, timeout)
 
     while timeout > 0 do
         timeout = AFB:lockwait(_AFT.context, timeout)
+        AFB:lockwait(_AFT.context, 0) --without it ev catcher cannot received event
         if _AFT.monitored_events[eventName].receivedCount == count + 1 then
             return 1
         end
