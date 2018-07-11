@@ -13,12 +13,10 @@
 	</feature>
 
 	<feature name="urn:AGL:widget:provided-api">
-		<param name="signal-composer" value="ws" />
+		<param name="afTest" value="ws" />
 	</feature>
 
 	<feature name="urn:AGL:widget:required-api">
-		<param name="lib/afb-signal-composer.so" value="local" />
-		<param name="low-can" value="ws" />
-		<param name="gps" value="ws" />
+		<param name="lib/aft.so" value="local" />
 	</feature>
 </widget>
